@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from IPython.core.magics import logging
 from scrapy.utils.log import configure_logging
 import logging
 from database import database_handler
