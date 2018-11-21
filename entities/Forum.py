@@ -38,4 +38,4 @@ class Post(db.Entity):
     topic = Required(Topic)
 
 
-db.generate_mapping(create_tables=True)
+db.generate_mapping()

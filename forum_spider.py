@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from IPython.core.magics import logging
+from scrapy.utils.log import configure_logging
+import logging
 from database import database_handler
 from models import forum_elements as felems, scrap_statistics
 from w3lib.html import remove_tags
@@ -10,10 +13,13 @@ import pony.orm as pny
 from entities import Forum
 from text_processing_tools import post_processing_tool as ppt
 from text_processing_tools import data_processing_tool as dpt
+from repositories import Repository
+
 
 class CategoriesSpider(scrapy.Spider):
     name = 'categories'
     categories_predictor = CategoriesPredictor()
+    repository = Repository.Repository()
 
     def __init__(self, start_url, scrap_mode, db_name="ScrapDB", **kwargs):
         super().__init__(**kwargs)
@@ -30,7 +36,7 @@ class CategoriesSpider(scrapy.Spider):
             self.forum = Forum.Forum(link=self.base_domain)
 
     def parse(self, response):
-        soup = BeautifulSoup(response.body)
+        soup = BeautifulSoup(response.body, features="lxml")
         parent = response.meta.get('parent')
         for tag in self.rule_provider.possible_tags:
             elements_with_tag = soup.body.findAll(tag)
@@ -52,29 +58,28 @@ class CategoriesSpider(scrapy.Spider):
 
     def parse_categories(self, html_element, predicted, tag, parent):
         if self.mappings[m.category_title]:
-            with pny.db_session:
-                category = Forum.Category(title=html_element.contents[0], link=html_element['href'],
-                                          forum=self.forum.forum_id,
-                                          parent_category=None if parent is None else parent.category_id)
+
+            category = self.repository.save_category(html_element, parent, self.forum)
             yield scrapy.Request(dont_filter=True, url=self.base_domain + category.link, callback=self.parse,
                                  meta={'parent': category})
-            print(html_element.contents[0])
+            logging.info(html_element.contents[0] + " " + self.base_domain + html_element['href'])
         if predicted == self.mappings[m.category_whole]:
             a_html_element = html_element.findAll("a")
             for a_html_element in a_html_element:
                 with pny.db_session:
                     Forum.Category(title=html_element.contents[0], link=html_element['href'], forum=self.forum.forum_id)
-                print(a_html_element.contents[0] + " " + self.base_domain + a_html_element['href'])
+                logging.info(a_html_element.contents[0] + " " + self.base_domain + a_html_element['href'])
 
     def parse_topics(self, html_element, parent):
+        author = None
+        date = None
         for tag in self.rule_provider.possible_tags:
             elements_inside_tag = html_element.findAll(tag)
-
             for elem in elements_inside_tag:
                 if self.element_has_css_class(elem):
                     predicted = self.rule_provider.predict(tag, elem["class"])
                     if predicted == self.mappings[m.topic_title]:
-                        print(elem.contents[0] + elem['href'])
+                        logging.info("Parsed topic: " + elem.contents[0] + elem['href'])
                         title = elem.contents[0]
                         link = elem['href']
                     if predicted == self.mappings[m.topic_author]:
@@ -82,14 +87,14 @@ class CategoriesSpider(scrapy.Spider):
                     if predicted == self.mappings[m.topic_date]:
                         date = dpt.parse_date(elem.contents)
 
-        with pny.db_session:
-            topic = Forum.Topic(title=title, link=link,author = author, date = date,
-                        category=parent.category_id)
+        topic = self.repository.save_topic(author, date, link, parent, title)
         yield scrapy.Request(dont_filter=True, url=self.base_domain + topic.link, callback=self.parse,
                              meta={'parent': topic})
 
     def parse_posts(self, html_element, parent):
-        print("Parsing post of topic: " + parent.title)
+        logging.info("Parsing post of topic: " + parent.title)
+        author = None
+        date = None
         for tag in self.rule_provider.possible_tags:
             elements_with_tag = html_element.findAll(tag)
             for elem in elements_with_tag:
@@ -101,13 +106,13 @@ class CategoriesSpider(scrapy.Spider):
                         author = elem.contents[0]
                     if predicted == self.mappings[m.post_date]:
                         date = dpt.parse_date(elem.contents)
-        with pny.db_session:
-            Forum.Post(content = content, topic=parent.topic_id, author = author, date=date)
+        self.repository.save_post(author, content, date, parent)
+
+
 
     def go_to_next_page(self, html_element, parent):
         a_html_element = html_element.findAll("a")
-        print("Going to next page: " + parent.title)
-        print(a_html_element[0]['href'])
+        logging.info("Going to next page: " + parent.title + " url: " + a_html_element[0]['href'])
         yield scrapy.Request(url=self.base_domain + a_html_element[0]['href'], callback=self.parse,
                              meta={'parent': parent})
 

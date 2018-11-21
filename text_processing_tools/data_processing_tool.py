@@ -1,6 +1,7 @@
 from text_processing_tools import polish_month_parser
 import dateutil.parser as dparser
 import bs4
+import logging
 
 helper = polish_month_parser.PolishMonthHelper()
 
@@ -20,4 +21,4 @@ def parse_date(contents):
             date = dparser.parse(expression, fuzzy=True, dayfirst=True)
             return date
         except:
-            print("No date in:" + expression)
+            logging.error("No date in:" + expression)
