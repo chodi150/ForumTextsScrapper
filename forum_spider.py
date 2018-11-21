@@ -19,6 +19,7 @@ class CategoriesSpider(scrapy.Spider):
     name = 'categories'
     categories_predictor = CategoriesPredictor()
     repository = Repository.Repository()
+    logging.basicConfig(filename='logs.txt', level=logging.DEBUG)
 
     def __init__(self, start_url, scrap_mode, db_name="ScrapDB", **kwargs):
         super().__init__(**kwargs)

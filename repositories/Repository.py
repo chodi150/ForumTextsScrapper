@@ -2,6 +2,8 @@ from entities import Forum
 import logging
 import pony.orm as pny
 
+logging.basicConfig(filename='logs.txt', level=logging.DEBUG)
+
 
 class Repository:
 
