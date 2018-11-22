@@ -1,8 +1,6 @@
 import pandas as pd
-from config import mapping
 from sklearn import tree
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
 from util import forum_elements_mapper as fem
 
 class RuleProvider:
@@ -30,14 +28,10 @@ class RuleProvider:
         np_rules = np.array(self.rules)
         self.classifier.fit = self.classifier.fit(np_rules[:,0:2], np_rules[:,2])
 
-    def predict(self, tag, cls):
-        clstr = ""
-        for x in cls:
-            if clstr != "":
-                clstr = clstr+" " +x
-            else:
-                clstr = clstr + x
-        if clstr not in self.possible_classes:
+    def predict(self, tag, classes):
+        classes_as_string = " ".join(classes)
+
+        if classes_as_string not in self.possible_classes:
             return 12
-        return self.classifier.predict([[self.mapper.tags[tag], self.mapper.classes[clstr]]])
+        return self.classifier.predict([[self.mapper.tags[tag], self.mapper.classes[classes_as_string]]])
 

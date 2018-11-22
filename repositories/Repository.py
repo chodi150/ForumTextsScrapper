@@ -10,7 +10,7 @@ class Repository:
     def save_category(self, html_element, parent, forum):
         try:
             with pny.db_session:
-                return Forum.Category(title=html_element.contents[0], link=html_element['href'],
+                return Forum.Category(title=str(html_element.contents[0]), link=html_element['href'],
                                       forum=forum.forum_id,
                                       parent_category=None if parent is None else parent.category_id)
         except KeyError as e:
