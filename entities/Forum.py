@@ -47,4 +47,4 @@ class Post(db.Entity):
     def __str__(self):
         return "[" + str(self.post_id) + "] " + self.content
 
-db.generate_mapping()
+db.generate_mapping(create_tables=True)
