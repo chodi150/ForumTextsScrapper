@@ -7,15 +7,15 @@ logging.basicConfig(filename='logs.txt', level=logging.DEBUG)
 
 class Repository:
 
-    def save_category(self, html_element, parent, forum):
+    def save_category(self, title,link, parent, forum):
         try:
             with pny.db_session:
-                return Forum.Category(title=str(html_element.contents[0]), link=html_element['href'],
+                return Forum.Category(title=title, link=link,
                                       forum=forum.forum_id,
                                       parent_category=None if parent is None else parent.category_id)
         except KeyError as e:
             logging.error(str(e))
-            logging.error("For element: " + str(html_element))
+            logging.error("For element: " + str(title))
 
     def save_topic(self, author, date, link, parent, title):
         try:
@@ -26,7 +26,7 @@ class Repository:
                                    category=parent.category_id)
         except BaseException as e:
             logging.error(str(e))
-            logging.error("Title: " + title + " link: " + link + " author: " + author + " date: " + date)
+            logging.error("Title: " + title + " link: " + link + " author: " + author)
 
     def save_post(self, author, content, date, parent):
         try:
@@ -36,4 +36,4 @@ class Repository:
                            date=date)
         except BaseException as e:
             logging.error("Save post: " + str(e))
-            logging.error("Content: " + content + " author: " + author + " date: " + date)
+            logging.error("Content: " + content + " author: " + author)

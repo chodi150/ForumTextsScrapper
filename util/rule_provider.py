@@ -9,12 +9,16 @@ class RuleProvider:
         self.rules = None
         self.classifier = None
         self.possible_tags = None
+        self.possible_tags_topics = None
+        self.possible_tags_posts = None
         self.possible_classes = None
         self.mapper = fem.ForumElementsMapper()
 
     def initialize_rules(self):
         self.rules = pd.read_csv("config/rules.csv", sep=';', header=None, names = ['tag', 'class', 'value'])
         self.possible_tags = set(self.rules['tag'])
+        self.possible_tags_topics = set(self.rules[self.rules['value'].str.contains('topic')]['tag'])
+        self.possible_tags_posts = set(self.rules[self.rules['value'].str.contains('post')]['tag'])
         self.possible_classes = set(self.rules['class'])
         self.mapper.initialize_tag_mapper(np.array(self.rules['tag']))
         self.mapper.initialize_class_mapper(np.array(self.rules['class']))

@@ -5,6 +5,7 @@ import logging
 
 helper = polish_month_parser.PolishMonthHelper()
 
+
 def substitute_polish_month(expression):
     for abb in helper.all_months_abbreviations:
         if abb in expression:
@@ -20,5 +21,8 @@ def parse_date(contents):
         try:
             date = dparser.parse(expression, fuzzy=True, dayfirst=True)
             return date
-        except:
-            logging.error("No date in:" + expression)
+        except BaseException as e:
+            pass
+    logging.error("[NODATE] Not found date in expression:" + "".join(without_tags))
+    return None
+

@@ -20,6 +20,9 @@ class Category(db.Entity):
     forum = Required(Forum)
     topics = Set('Topic')
 
+    def __str__(self):
+        return "["+str(self.category_id)+"] " + self.title
+
 
 class Topic(db.Entity):
     topic_id = PrimaryKey(int, auto=True)
@@ -30,6 +33,9 @@ class Topic(db.Entity):
     topics = Set('Post')
     category = Required(Category)
 
+    def __str__(self):
+        return "[" + str(self.topic_id) + "] " + self.title
+
 
 class Post(db.Entity):
     post_id = PrimaryKey(int, auto=True)
@@ -38,5 +44,7 @@ class Post(db.Entity):
     author = Optional(str)
     topic = Required(Topic)
 
+    def __str__(self):
+        return "[" + str(self.post_id) + "] " + self.content
 
 db.generate_mapping()
