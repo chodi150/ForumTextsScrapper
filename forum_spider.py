@@ -16,7 +16,19 @@ class CategoriesSpider(scrapy.Spider):
     name = 'categories'
     categories_predictor = CategoriesPredictor()
     repository = Repository.Repository()
-    logging.basicConfig(filename='logs.txt', level=logging.DEBUG)
+    logger_dbg = logging.getLogger("dbg")
+    logger_dbg.setLevel(logging.DEBUG)
+    fh_dbg_log = logging.FileHandler('debug.log', mode='w', encoding='utf-8')
+    fh_dbg_log.setLevel(logging.DEBUG)
+
+    # Print time, logger-level and the call's location in a source file.
+    formatter = logging.Formatter(
+        '%(asctime)s-%(levelname)s(%(module)s:%(lineno)d)  %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
+    fh_dbg_log.setFormatter(formatter)
+
+    logger_dbg.addHandler(fh_dbg_log)
+    logger_dbg.propagate = False
 
     def __init__(self, start_url, scrap_mode, **kwargs):
         super().__init__(**kwargs)
@@ -27,8 +39,7 @@ class CategoriesSpider(scrapy.Spider):
         self.rule_provider.prepare_model()
         self.mappings = self.rule_provider.mapper.mappings
         self.scraping_strategy = scraping_strategy_builder.get_strategy(scrap_mode)
-        with pny.db_session:
-            self.forum = Forum.Forum(link=self.base_domain)
+        self.forum = self.scraping_strategy.init_strategy(self.base_domain)
 
     def parse(self, response):
         soup = BeautifulSoup(response.body, features="lxml")
@@ -38,16 +49,7 @@ class CategoriesSpider(scrapy.Spider):
             for html_element in elements_with_tag:
                 if html_util.element_has_css_class(html_element):
                     predicted = self.rule_provider.predict(tag, html_element["class"])
-
-                    if predicted == self.mappings[m.category_whole] or predicted == self.mappings[m.category_title]:
-                        yield from self.parse_categories(html_element, predicted, parent)
-                    if predicted == self.mappings[m.topic_whole]:
-                        yield from self.parse_topics(html_element, parent)
-                    if predicted == self.mappings[m.next_page] or predicted == self.mappings[m.next_page_link]:
-                        yield from self.go_to_next_page(html_element, parent, predicted)
-                    if predicted == self.mappings[m.post_whole]:
-                        self.parse_posts(html_element, parent)
-
+                    yield from self.scraping_strategy.execute_strategy(html_element, parent, predicted, tag, self.mappings, self)
 
 
     def parse_categories(self, html_element, predicted, parent):
@@ -56,14 +58,18 @@ class CategoriesSpider(scrapy.Spider):
             link = html_element['href']
             title = str(html_element.contents[0])
             category = self.repository.save_category(title, link, parent, self.forum)
-            logging.info(html_element.contents[0] + " " + self.base_domain + html_element['href'])
+            self.logger_dbg.info(title + " " + self.base_domain + link)
 
         if predicted == self.mappings[m.category_whole]:
-            first_a_html_element_inside_whole = html_element.findAll("a")[0]
-            link = first_a_html_element_inside_whole['href']
-            title = str(first_a_html_element_inside_whole.contents[0])
-            category = self.repository.save_category(title,link, parent, self.forum)
-            logging.info(html_element.contents[0] + " " + self.base_domain + html_element['href'])
+            try:
+                first_a_html_element_inside_whole = html_element.findAll("a")[0]
+                link = first_a_html_element_inside_whole['href']
+                title = str(first_a_html_element_inside_whole.contents[0])
+                category = self.repository.save_category(title,link, parent, self.forum)
+                self.logger_dbg.info(title + " " + self.base_domain + link)
+            except BaseException as e:
+                self.logger_dbg.error(str(e))
+                self.logger_dbg.error("Can't find category inside: " + str(html_element))
 
         if category is not None and html_util.url_not_from_other_domain(category.link):
             yield scrapy.Request(url=self.base_domain + category.link, callback=self.parse, meta={'parent': category})
@@ -82,23 +88,23 @@ class CategoriesSpider(scrapy.Spider):
                     if predicted == self.mappings[m.topic_title]:
                         title = elem.contents[0]
                         link = elem['href']
-                        logging.info(title + " " + link)
+                        self.logger_dbg.info(title + " " + link)
                     if predicted == self.mappings[m.topic_author]:
                         author = elem.contents[0]
                     if predicted == self.mappings[m.topic_date]:
                         date = dpt.parse_date(elem.contents)
 
         if title is None or link is None:
-            logging.info("Can't find topic inside: " + str(html_element))
+            self.logger_dbg.info("Can't find topic inside: " + str(html_element))
             return
 
         topic = self.repository.save_topic(author, date, link, parent, title)
-        logging.info("Scrapped topic: " + title + " with id: " + str(topic.topic_id))
+        self.logger_dbg.info("Scrapped topic: " + title + " with id: " + str(topic.topic_id))
         yield scrapy.Request(dont_filter=True, url=self.base_domain + topic.link, callback=self.parse,
                              meta={'parent': topic})
 
     def parse_posts(self, html_element, parent):
-        logging.info("Parsing post of topic: " + parent.title)
+        self.logger_dbg.info("Parsing post of topic: " + parent.title)
         author = None
         date = None
         content = None
@@ -108,7 +114,7 @@ class CategoriesSpider(scrapy.Spider):
                 if html_util.element_has_css_class(elem):
                     predicted = self.rule_provider.predict(tag, elem["class"])
                     if predicted == self.mappings[m.post_body]:
-                        content = ppt.contents_to_plain_text(elem.contents)
+                        content = self.assign_new_value_if_changed_and_not_null(content, ppt.contents_to_plain_text(elem.contents))
                     if predicted == self.mappings[m.topic_author]:
                         author = elem.contents[0]
                     if predicted == self.mappings[m.post_date]:
@@ -116,18 +122,28 @@ class CategoriesSpider(scrapy.Spider):
         if content is not None:
             self.repository.save_post(author, content, date, parent)
 
+    def assign_new_value_if_changed_and_not_null(self, old_value:str, new_value:str):
+        if old_value is None or (new_value != old_value and new_value != ""):
+            return new_value
+        else:
+            return old_value
+
+
     def go_to_next_page(self, html_element, parent, predicted):
         if predicted == self.mappings[m.next_page]:
             try:
                 first_a_html_element_inside_whole = html_element.findAll("a")[0]
                 link = first_a_html_element_inside_whole['href']
-                logging.info("Going to next page: " + str(parent) + " unwrapped url: " + link)
+                self.logger_dbg.info("Going to next page: " + str(parent) + " unwrapped url: " + link)
                 yield scrapy.Request(url=self.base_domain + link, callback=self.parse,
                                      meta={'parent': parent})
             except BaseException as e:
-                logging.error("Couldn't go to next page of: " + str(parent) + " due to: " + str(e))
-                logging.error("Element that fucked up: " + str(html_element))
+                self.logger_dbg.error("Couldn't go to next page of: " + str(parent) + " due to: " + str(e))
+                self.logger_dbg.error("Element that fucked up: " + str(html_element))
         elif predicted == self.mappings[m.next_page_link]:
-            logging.info("Going to next page: " +str(parent) + " url: " + html_element['href'])
+            self.logger_dbg.info("Going to next page: " +str(parent) + " url: " + html_element['href'])
             yield scrapy.Request(url=self.base_domain + html_element['href'], callback=self.parse,
                                  meta={'parent': parent})
+
+    def closed(self, reason):
+        self.scraping_strategy.finish_strategy(self.forum)

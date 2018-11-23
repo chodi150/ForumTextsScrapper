@@ -36,4 +36,25 @@ class Repository:
                            date=date)
         except BaseException as e:
             logging.error("Save post: " + str(e))
-            logging.error("Content: " + content + " author: " + author)
+            logging.error("Content: " + content + " parent_id: " + str(parent.topic_id))
+
+    def save_forum(self, link):
+        with pny.db_session:
+            forum = Forum.Forum(link=link)
+            return forum
+    def find_forum(self, link):
+        pass # Find last version of forum
+
+    def get_categories(self, ids):
+        with pny.db_session:
+            categories = list(Forum.Category.select(lambda x: x.category_id in ids))
+            return categories
+
+    def get_forum_of_category(self, category):
+        with pny.db_session:
+            return category.forum
+
+    def get_all_categories(self, forum):
+        with pny.db_session:
+            categories = list(Forum.Category.select(lambda x: x.forum.forum_id == forum.forum_id))
+            return categories

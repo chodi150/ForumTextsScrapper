@@ -11,6 +11,7 @@ div;topic-poster responsive-hide left-box;topic_date
 div;postbody;post_whole
 a;username;post_author
 div;content;post_body
+blockquote;postcontent restore ;post_body
 p;author;post_date
 li;arrow next;next_page
 span;prev_next;next_page

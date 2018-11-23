@@ -23,6 +23,14 @@ class Category(db.Entity):
     def __str__(self):
         return "["+str(self.category_id)+"] " + self.title
 
+    def to_dict(self):
+        return {
+            'category_id': self.category_id,
+            'link': self.link,
+            'title': self.title,
+            'parent_category': self.parent_category,
+        }
+
 
 class Topic(db.Entity):
     topic_id = PrimaryKey(int, auto=True)
