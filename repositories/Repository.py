@@ -42,8 +42,12 @@ class Repository:
         with pny.db_session:
             forum = Forum.Forum(link=link)
             return forum
+
     def find_forum(self, link):
-        pass # Find last version of forum
+        with pny.db_session:
+            forum = Forum.Forum.select(lambda p: p.link == link).order_by(pny.desc(Forum.Forum.forum_id)).first()
+            return forum
+
 
     def get_categories(self, ids):
         with pny.db_session:

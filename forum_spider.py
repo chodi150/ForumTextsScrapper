@@ -146,4 +146,4 @@ class CategoriesSpider(scrapy.Spider):
                                  meta={'parent': parent})
 
     def closed(self, reason):
-        self.scraping_strategy.finish_strategy(self.forum)
+        self.scraping_strategy.finish_strategy()

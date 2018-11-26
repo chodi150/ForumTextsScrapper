@@ -8,6 +8,9 @@ from config import mapping as m
 
 class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
 
+    def finish_strategy(self):
+        pass
+
     def __init__(self):
         self.repository = r.Repository()
         self.strategy_initialized = False
@@ -32,10 +35,10 @@ class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
         config_file = pd.read_csv("config/categories.csv", sep=';')
         category_ids = set(config_file['category_id'])
         categories = self.repository.get_categories(category_ids)
-        base_link = self.repository.get_forum_of_category(categories[0]).link
-
+        base_link = self.forum.link
+        self.strategy_initialized = True
         for category in categories:
-            yield scrapy.Request(dont_filter=True, url=base_link + category.link, callback=spider.parse,
+            yield scrapy.Request(url=base_link + category.link, callback=spider.parse,
                                  meta={'parent': category})
 
 
