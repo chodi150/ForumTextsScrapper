@@ -1,19 +1,25 @@
 h2;forumtitle;category_whole
+h4;ipsDataItem_title ipsType_large ipsType_break;category_whole
 a;forumtitle;category_title
 li;row bg1;topic_whole
 li;row bg2;topic_whole
 li;threadbit ;topic_whole
+li;ipsDataItem ipsDataItem_responsivePhoto   ;topic_whole
 a;topictitle;topic_title
 a;title;topic_title
 a;username;topic_author
+a;ipsType_break;topic_author
 a;username understate;topic_author
 div;topic-poster responsive-hide left-box;topic_date
 div;postbody;post_whole
+article;cPost ipsBox  ipsComment  ipsComment_parent ipsClearfix ipsClear ipsColumns ipsColumns_noSpacing ipsColumns_collapsePhone  ;post_whole
 a;username;post_author
 div;content;post_body
+div;ipsType_normal ipsType_richText ipsContained;post_body
 blockquote;postcontent restore ;post_body
 p;author;post_date
 li;arrow next;next_page
 span;prev_next;next_page
+li;ipsPagination_next;next_page
 a;button button-icon-only;next_page_link
 a;right-box right;next_page_link

@@ -1,5 +1,5 @@
 from scrap_strategies.scraping_strategy import ScrapingStrategy
-from config import mapping as m
+from properties import mapping as m
 from repositories import Repository as r
 import pandas as pd
 
@@ -15,7 +15,7 @@ class CategoriesScrapingStrategy(ScrapingStrategy):
         return self.forum
 
     def execute_strategy(self, html_element, parent, predicted, tag, mappings, spider):
-        if predicted == mappings[m.category_whole] or predicted == mappings[m.category_title]:
+        if predicted in (mappings[m.category_whole], mappings[m.category_title]):
             yield from spider.parse_categories(html_element, predicted, parent)
 
     def finish_strategy(self):

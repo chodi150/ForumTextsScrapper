@@ -26,3 +26,8 @@ def parse_date(contents):
     logging.error("[NODATE] Not found date in expression:" + "".join(without_tags))
     return None
 
+def parse_english_date(date):
+    date_string = ''.join(date)
+    date = dparser.parse(date_string, fuzzy=True)
+    return date
+

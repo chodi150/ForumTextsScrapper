@@ -3,8 +3,8 @@ import scrapy
 from scrap_strategies.scraping_strategy import ScrapingStrategy
 from repositories import Repository as r
 import pandas as pd
-from config import mapping as m
-
+from properties import mapping as m
+from util.html_util import build_link
 
 class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
 
@@ -38,7 +38,7 @@ class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
         base_link = self.forum.link
         self.strategy_initialized = True
         for category in categories:
-            yield scrapy.Request(url=base_link + category.link, callback=spider.parse,
+            yield scrapy.Request(url=build_link(base_link, category.link), callback=spider.parse,
                                  meta={'parent': category})
 
 

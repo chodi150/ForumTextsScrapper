@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import logging
-from predictors.categories_predictor import *
+from bs4 import BeautifulSoup
 from util import rule_provider as rp, html_util
-from config import mapping as m
+from properties import mapping as m
 import pony.orm as pny
 from entities import Forum
 from text_processing_tools import post_processing_tool as ppt
 from text_processing_tools import data_processing_tool as dpt
 from repositories import Repository
 from scrap_strategies import scraping_strategy_builder
+from util.html_util import build_link
 
 
 class CategoriesSpider(scrapy.Spider):
     name = 'categories'
-    categories_predictor = CategoriesPredictor()
     repository = Repository.Repository()
     logger_dbg = logging.getLogger("dbg")
     logger_dbg.setLevel(logging.DEBUG)
@@ -72,7 +72,7 @@ class CategoriesSpider(scrapy.Spider):
                 self.logger_dbg.error("Can't find category inside: " + str(html_element))
 
         if category is not None and html_util.url_not_from_other_domain(category.link):
-            yield scrapy.Request(url=self.base_domain + category.link, callback=self.parse, meta={'parent': category})
+            yield scrapy.Request(url=build_link(self.base_domain, category.link), callback=self.parse, meta={'parent': category})
 
 
     def parse_topics(self, html_element, parent):
@@ -94,13 +94,19 @@ class CategoriesSpider(scrapy.Spider):
                     if predicted == self.mappings[m.topic_date]:
                         date = dpt.parse_date(elem.contents)
 
+        time_tags = html_element.findAll("time")
+        if len(time_tags) > 0:
+            date = dpt.parse_english_date(time_tags[0].contents)
+            link =  html_element.findAll('a')[0]['href']
+            title = html_element.findAll('a')[0]['title']
+
         if title is None or link is None:
             self.logger_dbg.info("Can't find topic inside: " + str(html_element))
             return
 
         topic = self.repository.save_topic(author, date, link, parent, title)
         self.logger_dbg.info("Scrapped topic: " + title + " with id: " + str(topic.topic_id))
-        yield scrapy.Request(dont_filter=True, url=self.base_domain + topic.link, callback=self.parse,
+        yield scrapy.Request(dont_filter=True, url=build_link(self.base_domain, topic.link), callback=self.parse,
                              meta={'parent': topic})
 
     def parse_posts(self, html_element, parent):
@@ -119,6 +125,10 @@ class CategoriesSpider(scrapy.Spider):
                         author = elem.contents[0]
                     if predicted == self.mappings[m.post_date]:
                         date = dpt.parse_date(elem.contents)
+
+        time_tags = html_element.findAll("time")
+        if len(time_tags) > 0:
+            date = dpt.parse_english_date(time_tags[0].contents)
         if content is not None:
             self.repository.save_post(author, content, date, parent)
 
@@ -135,14 +145,14 @@ class CategoriesSpider(scrapy.Spider):
                 first_a_html_element_inside_whole = html_element.findAll("a")[0]
                 link = first_a_html_element_inside_whole['href']
                 self.logger_dbg.info("Going to next page: " + str(parent) + " unwrapped url: " + link)
-                yield scrapy.Request(url=self.base_domain + link, callback=self.parse,
+                yield scrapy.Request(url=build_link(self.base_domain, link), callback=self.parse,
                                      meta={'parent': parent})
             except BaseException as e:
                 self.logger_dbg.error("Couldn't go to next page of: " + str(parent) + " due to: " + str(e))
                 self.logger_dbg.error("Element that fucked up: " + str(html_element))
         elif predicted == self.mappings[m.next_page_link]:
             self.logger_dbg.info("Going to next page: " +str(parent) + " url: " + html_element['href'])
-            yield scrapy.Request(url=self.base_domain + html_element['href'], callback=self.parse,
+            yield scrapy.Request(url= build_link(self.base_domain, html_element['href']), callback=self.parse,
                                  meta={'parent': parent})
 
     def closed(self, reason):

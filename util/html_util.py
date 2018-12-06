@@ -1,3 +1,6 @@
+from urllib.parse import urlparse
+
+
 def element_has_css_class(element):
     return 'class' in element.attrs
 
@@ -7,3 +10,19 @@ def url_not_from_other_domain(url):
         return False
     else:
         return True
+
+
+def build_link(domain, link):
+    new_link = domain + link
+    try:
+        extracted_domain = urlparse(link)[1]
+        extracted_base_domain = urlparse(domain)[1]
+        if extracted_domain == extracted_base_domain:
+            new_link = link
+    except BaseException as e:
+        pass
+
+    return new_link
+
+
+

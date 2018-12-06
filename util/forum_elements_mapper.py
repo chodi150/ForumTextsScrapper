@@ -1,6 +1,5 @@
-import csv
-import numpy as np
-from config import mapping as m
+from properties import mapping as m
+
 
 class ForumElementsMapper:
 
