@@ -5,11 +5,14 @@ def element_has_css_class(element):
     return 'class' in element.attrs
 
 
-def url_not_from_other_domain(url):
-    if "http" in url:
-        return False
-    else:
-        return True
+def url_not_from_other_domain(url, base_domain):
+    extracted_domain = urlparse(url)[1]
+    extracted_base_domain = urlparse(base_domain)[1]
+    return extracted_domain == extracted_base_domain
+    # if "http" in url:
+    #     return False
+    # else:
+    #     return True
 
 
 def build_link(domain, link):

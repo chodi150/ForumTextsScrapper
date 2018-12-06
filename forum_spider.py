@@ -71,7 +71,7 @@ class CategoriesSpider(scrapy.Spider):
                 self.logger_dbg.error(str(e))
                 self.logger_dbg.error("Can't find category inside: " + str(html_element))
 
-        if category is not None and html_util.url_not_from_other_domain(category.link):
+        if category is not None and html_util.url_not_from_other_domain(category.link, self.base_domain):
             yield scrapy.Request(url=build_link(self.base_domain, category.link), callback=self.parse, meta={'parent': category})
 
 
