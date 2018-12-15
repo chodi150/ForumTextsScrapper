@@ -6,6 +6,8 @@ def element_has_css_class(element):
 
 
 def url_not_from_other_domain(url, base_domain):
+    if "http" not in url:
+        return True
     extracted_domain = urlparse(url)[1]
     extracted_base_domain = urlparse(base_domain)[1]
     return extracted_domain == extracted_base_domain
