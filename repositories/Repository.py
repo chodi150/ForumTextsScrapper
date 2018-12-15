@@ -2,6 +2,8 @@ from entities import Forum
 import logging
 import pony.orm as pny
 
+from util import sql_queries
+
 logging.basicConfig(filename='logs.txt', level=logging.DEBUG)
 
 
@@ -62,3 +64,8 @@ class Repository:
         with pny.db_session:
             categories = list(Forum.Category.select(lambda x: x.forum.forum_id == forum.forum_id))
             return categories
+
+    def get_posts(self, filterdate, forum_id):
+        with pny.db_session:
+            data = Forum.db.select(sql_queries.query_all_posts(forum_id, filterdate))
+        return data
