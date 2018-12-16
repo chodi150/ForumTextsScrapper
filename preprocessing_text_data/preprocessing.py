@@ -9,10 +9,14 @@ from glove import Corpus, Glove
 
 
 def is_correct(word, hun):
-    suggested = hun.suggest(word)
-    if len(suggested)== 0:
+    try:
+        suggested = hun.suggest(word)
+        if len(suggested) == 0:
+            return False
+        return suggested[0] == word
+    except BaseException as e:
+        print(str(e))
         return False
-    return suggested[0] == word
 
 
 
@@ -21,15 +25,15 @@ def correct_writing(hun, tokens):
 
     for i in range(0,len(tokens)):
         if not is_correct(tokens[i], hun):
-            suggested = hun.suggest(tokens[i])
-            if len(suggested) != 0:
-                try:
+            try:
+                suggested = hun.suggest(tokens[i])
+                if len(suggested) != 0:
                     chosen_suggestion = suggested[0]
                     words =chosen_suggestion.split(' ')
                     for w in words:
                         tokens_stemmed.append(str.lower(hun.stem(w)[0]))
-                except BaseException as e:
-                    print(tokens[i] + " stemmed to: " + suggested[0])
+            except BaseException as e:
+                print(str(e))
         else:
             tokens_stemmed.append(hun.stem(tokens[i])[0])
 

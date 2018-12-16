@@ -1,4 +1,5 @@
 h2;forumtitle;category_whole
+h3;threadtitle;topic_whole
 h4;ipsDataItem_title ipsType_large ipsType_break;category_whole
 a;forumtitle;category_title
 li;row bg1;topic_whole
