@@ -13,12 +13,15 @@ a;ipsType_break;topic_author
 a;username understate;topic_author
 div;topic-poster responsive-hide left-box;topic_date
 div;postbody;post_whole
+li;postbitlegacy postbitim postcontainer old;post_whole
 article;cPost ipsBox  ipsComment  ipsComment_parent ipsClearfix ipsClear ipsColumns ipsColumns_noSpacing ipsColumns_collapsePhone  ;post_whole
 a;username;post_author
+div;username_container;post_author
 div;content;post_body
 div;ipsType_normal ipsType_richText ipsContained;post_body
 blockquote;postcontent restore ;post_body
 p;author;post_date
+span;date;post_date
 li;arrow next;next_page
 span;prev_next;next_page
 li;ipsPagination_next;next_page
