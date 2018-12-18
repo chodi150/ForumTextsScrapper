@@ -19,10 +19,16 @@ def is_correct(word, hun):
         return False
 
 
+def report_progress(counter):
+    counter[0] = counter[0] + 1
+    if counter[0] % 100 ==0:
+        print("Preprocessed " + str(counter[0]) + " tokens")
 
-def correct_writing(hun, tokens):
+
+
+def correct_writing(hun, tokens, counter):
     tokens_stemmed = []
-
+    report_progress(counter)
     for i in range(0,len(tokens)):
         if not is_correct(tokens[i], hun):
             try:

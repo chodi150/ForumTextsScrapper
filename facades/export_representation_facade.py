@@ -8,6 +8,9 @@ from glove import Corpus, Glove
 from preprocessing_text_data.preprocessing import correct_writing, build_post_repr
 import itertools
 
+from repositories import Repository
+
+
 def diacritize_fully(word):
 
     words = set()
@@ -25,17 +28,18 @@ def swap(word, swap_rule):
     return word.replace(swap_rule[0], swap_rule[1])
 
 def prepare(forum_id, filterdate):
-    # repository = Repository.Repository()
-    # data = repository.get_posts(filterdate, forum_id)
-    # data_frame = pd.DataFrame(data, columns=['post', 'post_date', 'topic_title', 'category'])
-    data_frame = pd.read_csv("C:/Users/Piotr/Desktop/csvlo/subaruklein.csv", sep=';')
+    repository = Repository.Repository()
+    data = repository.get_posts(filterdate, forum_id)
+    data_frame = pd.DataFrame(data, columns=['post', 'post_date', 'topic_title', 'category'])
+    # data_frame = pd.read_csv("C:/Users/Piotr/Desktop/csvlo/subaruklein.csv", sep=';')
     data_frame.post = data_frame.post.apply(lambda x: re.sub(' ?(f|ht)tp(s?)://(.*)[0-9][.][a-z]+', '', x))
     data_frame.post = data_frame.post.apply(lambda x: str.lower(x))
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'[^\w\s]', ' ', x))
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'\d+', ' ', x))
     tokens = data_frame.post.apply(lambda x: nltk.word_tokenize(x))
     hun = hunspell.Hunspell('pl')
-    tokens_stemmed = tokens.apply(lambda x: correct_writing(hun, x))
+    counter = [0]
+    tokens_stemmed = tokens.apply(lambda x: correct_writing(hun, x, counter))
 
     data_frame.post = tokens_stemmed
     data_frame.to_csv("stemmed_tokens" + str(forum_id) + ".csv")
