@@ -37,7 +37,8 @@ def prepare(forum_id, filterdate, filename):
 
 
 def do_tfidf(forum_id, filterdate, filename):
-    data_frame  = pd.read_csv("C:/Users/Piotr/Desktop/Inz/thesisData/thesisData/Tokens_Subaru.csv", sep=',')
+    #data_frame  = pd.read_csv("C:/Users/Piotr/Desktop/Inz/thesisData/thesisData/Tokens_Subaru.csv", sep=',')
+    data_frame = prepare(forum_id, filterdate, "prepare_" + filename)
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'[^\w\s]', '', x))
     stops = set(stopwords.words('polish'))
     vectorizer = TfidfVectorizer(stop_words=stops, min_df=10)
