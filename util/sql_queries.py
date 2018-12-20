@@ -14,6 +14,6 @@ def query_all_posts(forum_id, date):
     full outer join category c1 on c.parent_category = c1.category_id
     full outer join category c2 on c1.parent_category = c2.category_id"""
 
-    select_clause += " where c.forum=" + str(forum_id) #+ " and p.date > '" + str(date) + "'"
+    select_clause += " where c.forum=" + str(forum_id)+ " and  p.date > '2012-01-01 00:00:00.000000' and (c.title = 'Impreza' or c.title = 'Forester') "
 
     return select_clause

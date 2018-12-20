@@ -2,7 +2,7 @@ from pony.orm import *
 import datetime
 
 db = Database()
-db.bind(provider='postgres', user='postgres', password='postgres', host='localhost', database='scrap2')
+db.bind(provider='postgres', user='postgres', password='bryant5', host='51.38.134.200', database='scrap2')
 
 
 class Forum(db.Entity):

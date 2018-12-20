@@ -20,10 +20,17 @@ args = parser.parse_args()
 filter_date = datetime.datetime(int(args.year), int(args.month), int(args.day))
 forum_id = int(args.forum)
 mode = args.mode
-filename = "output.csv" if args.filename is None else args.filename
+filename = "output" if args.filename is None else args.filename
 
+current_date = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M")
+filename = filename + current_date + ".csv"
 
 if mode == "glove":
+    filename = "glove_" + filename
     export_representation_facade.do_glove(forum_id, filter_date, filename)
 elif mode == "tfidf":
+    filename = "tfidf_" + filename
     export_representation_facade.do_tfidf(forum_id, filter_date, filename)
+elif mode == "prepare":
+    filename = "prepare_" + filename
+    export_representation_facade.prepare(forum_id, filter_date, filename)
