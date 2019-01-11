@@ -25,9 +25,13 @@ filename = "output" if args.filename is None else args.filename
 current_date = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M")
 filename = filename + current_date + ".csv"
 
+window_size = 5
+vec_dim = 100
+
 if mode == "glove":
+    filename = "window_size_" + str(window_size) + "_vec_dim_" + str(vec_dim) + "_" + filename
     filename = "glove_" + filename
-    export_representation_facade.do_glove(forum_id, filter_date, filename)
+    export_representation_facade.do_glove(forum_id, filter_date, filename, window_size = window_size, vec_dim=vec_dim)
 elif mode == "tfidf":
     filename = "tfidf_" + filename
     export_representation_facade.do_tfidf(forum_id, filter_date, filename)

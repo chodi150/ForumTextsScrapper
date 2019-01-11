@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import logging
 from anytree import Node, RenderTree
-
+from collections import Counter
 
 
 diacrits = dict([("a", "ą"), ("e", "ę"), ("c", "ć"), ("z", "ź"), ("z", "ź"), ("l", "ł"), ("s", "ś"), ("o", "ó")])
@@ -61,13 +61,14 @@ def correct_writing(hun, tokens, counter):
 
 def build_post_repr(tokens, glove):
     representation = np.zeros(glove.no_components)
+    counter = Counter(tokens)
     for tok in tokens:
         if tok in glove.dictionary:
-            representation = representation + glove.word_vectors[glove.dictionary[tok]]
+            representation = representation + counter[tok]*glove.word_vectors[glove.dictionary[tok]]
 
-    mean_vect = representation/len(representation)
-
-    return pd.DataFrame(item for item in mean_vect).transpose()
+    data_frame =  pd.DataFrame(item for item in representation).transpose()
+    data_frame['delete'] = True if np.all(representation == 0) else False
+    return data_frame
 
 
 def recures(parent, i):
