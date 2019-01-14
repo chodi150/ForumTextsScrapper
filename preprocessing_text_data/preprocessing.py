@@ -1,19 +1,30 @@
 import pandas as pd
-import nltk
 import numpy as np
-import re
-from nltk.corpus import stopwords
-import hunspell
-from sklearn.feature_extraction.text import TfidfVectorizer
-from glove import Corpus, Glove
+import logging
+from anytree import Node, RenderTree
+from collections import Counter
 
+
+diacrits = dict([("a", "ą"), ("e", "ę"), ("c", "ć"), ("z", "ź"), ("z", "ź"), ("l", "ł"), ("s", "ś"), ("o", "ó")])
+
+logger_dbg = logging.getLogger("dbg")
+logger_dbg.setLevel(logging.DEBUG)
+fh_dbg_log = logging.FileHandler('correctingwriting.log', mode='w', encoding='utf-8')
+fh_dbg_log.setLevel(logging.DEBUG)
+
+# Print time, logger-level and the call's location in a source file.
+formatter = logging.Formatter(
+    '%(asctime)s-%(levelname)s(%(module)s:%(lineno)d)  %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
+fh_dbg_log.setFormatter(formatter)
+
+logger_dbg.addHandler(fh_dbg_log)
+logger_dbg.propagate = False
 
 def is_correct(word, hun):
     try:
         suggested = hun.suggest(word)
-        if len(suggested) == 0:
-            return False
-        return suggested[0] == word
+        return word in suggested
     except BaseException as e:
         print(str(e))
         return False
@@ -34,7 +45,10 @@ def correct_writing(hun, tokens, counter):
             try:
                 suggested = hun.suggest(tokens[i])
                 if len(suggested) != 0:
-                    chosen_suggestion = suggested[0]
+                    common = set(suggested).intersection(diacritize_fully(tokens[i]))
+                    chosen_suggestion = suggested[0] if len(common) == 0 else list(common)[0]
+                    if len(common) !=0:
+                        logger_dbg.info("Word was: " + tokens[i] + " diacritic check; " + str(common) + " chosen first: " + chosen_suggestion)
                     words =chosen_suggestion.split(' ')
                     for w in words:
                         tokens_stemmed.append(str.lower(hun.stem(w)[0]))
@@ -47,10 +61,35 @@ def correct_writing(hun, tokens, counter):
 
 def build_post_repr(tokens, glove):
     representation = np.zeros(glove.no_components)
+    counter = Counter(tokens)
     for tok in tokens:
         if tok in glove.dictionary:
-            representation = representation + glove.word_vectors[glove.dictionary[tok]]
+            representation = representation + counter[tok]*glove.word_vectors[glove.dictionary[tok]]
 
-    mean_vect = representation/len(representation)
+    data_frame =  pd.DataFrame(item for item in representation).transpose()
+    data_frame['delete'] = True if np.all(representation == 0) else False
+    return data_frame
 
-    return pd.DataFrame(item for item in mean_vect).transpose()
+
+def recures(parent, i):
+    if i >= len(parent.name):
+        return
+    if parent.name[i] not in diacrits.keys():
+        recures(parent, i+1)
+    else:
+        word1 = parent.name
+        word2 = ""
+        for j in range(0, len(parent.name)):
+            word2 += parent.name[j] if j != i else diacrits[parent.name[j]]
+        n1 = Node(word1, parent = parent)
+        n2 = Node(word2, parent = parent)
+        recures(n1, i+1)
+        recures(n2, i+1)
+
+def diacritize_fully(word):
+    words = set()
+    root = Node(word)
+    recures(root, 0)
+    for pre, fill, node in RenderTree(root):
+        words.add( node.name)
+    return words
