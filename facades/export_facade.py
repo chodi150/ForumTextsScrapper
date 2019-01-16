@@ -1,6 +1,6 @@
 import datetime
 
-from entities import Forum
+from entities import Entities
 import pony.orm as pny
 import pandas as pd
 from util import sql_queries

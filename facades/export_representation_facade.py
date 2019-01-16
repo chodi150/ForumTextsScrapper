@@ -48,23 +48,20 @@ def do_tfidf(forum_id, filterdate, filename):
     stops = set(stopwords.words('polish'))
     vectorizer = TfidfVectorizer(stop_words=stops, min_df=0.005, max_df=0.5)
     vectorizer.fit(data_frame.post)
-    tfidf_transformed = vectorizer.transform(data_frame.post)
-    # tfidf = pd.SparseDataFrame(tfidf_transformed)
     tfidf = pd.DataFrame(vectorizer.transform(data_frame.post).toarray(), columns=vectorizer.get_feature_names())
+    tfidf['category'] = data_frame.category
     only_nulls = list(map(lambda x: np.all(x[0:len(x)-1]==0), tfidf.values))
     tfidf['only_nulls'] = np.array(only_nulls)
     tfidf = tfidf[tfidf['only_nulls'] == False]
     tfidf = tfidf.drop('only_nulls', axis=1)
     filename = "dict_size_" + str(len(vectorizer.get_feature_names())) + "_" + filename
+
     tfidf.to_csv(filename, sep=';', escapechar='\\', encoding='utf-8')
-    # tfidf = pd.DataFrame(, columns=vectorizer.get_feature_names())
-    # tfidf['belongs_to'] = data_frame.category
-    # tfidf.to_csv(filename, sep=';', escapechar='\\')
 
 
 def do_glove(forum_id, filterdate, filename, window_size, vec_dim):
     # data_frame = prepare(forum_id, filterdate, "prepare_" + filename)
-    data_frame  = pd.read_csv("C:/Users/Piotr/Desktop/Inz/ZBIORY_DANYCH/data_sets/forum_bmw/prepare_tfidf_bmw03-01-2019-11-37.csv", sep=';')
+    data_frame  = pd.read_csv("C:/Users/Piotr/Desktop/Inz/ZBIORY_DANYCH/data_sets/forum_haszysz/prepare_glove_window_size_5_vec_dim_100_haszysz_miejscowka_wentylacja04-01-2019-15-09.csv", sep=';')
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'[^\w\s]', '', x))
     stops = set(stopwords.words('polish'))
     vectorizer = TfidfVectorizer(stop_words=stops, min_df=0.005, max_df=0.5, use_idf=False)
@@ -73,7 +70,7 @@ def do_glove(forum_id, filterdate, filename, window_size, vec_dim):
     corpus = Corpus(vectorizer.vocabulary_)
     corpus.fit(data_frame.post, window=window_size, ignore_missing=True)
     glove = Glove(no_components=vec_dim, learning_rate=0.01)
-    glove.fit(corpus.matrix, epochs=300, no_threads=4, verbose=True)
+    glove.fit(corpus.matrix, epochs=1, no_threads=4, verbose=True)
     glove.add_dictionary(corpus.dictionary)
     pd.DataFrame(glove.word_vectors).to_csv("word_vectors" + filename, sep=';')
 

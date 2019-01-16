@@ -1,10 +1,5 @@
 import argparse
 import datetime
-import dateutil.parser as dparser
-from entities import Forum
-import pony.orm as pny
-import pandas as pd
-from util import sql_queries
 from facades import export_representation_facade
 
 
@@ -15,6 +10,7 @@ parser.add_argument('-month', help='month', required=True)
 parser.add_argument('-year', help='year', required=True)
 parser.add_argument('-filename', help='year', required=False)
 parser.add_argument('-mode', help='glove or tfidf', required=True)
+
 
 args = parser.parse_args()
 filter_date = datetime.datetime(int(args.year), int(args.month), int(args.day))

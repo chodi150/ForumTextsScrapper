@@ -4,8 +4,6 @@ import logging
 from bs4 import BeautifulSoup
 from util import rule_provider as rp, html_util
 from properties import mapping as m
-import pony.orm as pny
-from entities import Forum
 from text_processing_tools import post_processing_tool as ppt
 from text_processing_tools import data_processing_tool as dpt
 from repositories import Repository

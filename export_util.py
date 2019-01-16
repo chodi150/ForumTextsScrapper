@@ -3,14 +3,14 @@ import os
 from datetime import datetime
 from urllib.parse import urlparse
 import re
-from entities import Forum
+from entities import Entities
 import pony.orm as pny
 import dateutil.parser as dparser
 
 
 def find_forum( forum_id, filter_date):
     with pny.db_session:
-        forum = Forum.Forum[forum_id]
+        forum = Entities.Forum[forum_id]
         base_directory = "../output/"+urlparse(forum.link)[1]
         if not os.path.isdir(base_directory):
             os.makedirs(base_directory)

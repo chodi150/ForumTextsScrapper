@@ -1,8 +1,8 @@
 from pony.orm import *
 import datetime
-
+from config import database_config
 db = Database()
-db.bind(provider='postgres', user='postgres', password='bryant5', host='51.38.134.200', database='scrap2')
+db.bind(provider='postgres', user=database_config.USERNAME, password=database_config.PASSWORD, host=database_config.HOST, database=database_config.DATABASE_NAME)
 
 
 class Forum(db.Entity):
@@ -54,5 +54,6 @@ class Post(db.Entity):
 
     def __str__(self):
         return "[" + str(self.post_id) + "] " + self.content
+
 
 db.generate_mapping(create_tables=True)

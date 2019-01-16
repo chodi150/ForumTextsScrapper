@@ -1,7 +1,7 @@
 import argparse
 import datetime
 import dateutil.parser as dparser
-from entities import Forum
+from entities import Entities
 import pony.orm as pny
 import pandas as pd
 from util import sql_queries
