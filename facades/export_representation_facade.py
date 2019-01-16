@@ -1,16 +1,12 @@
 import pandas as pd
 import nltk
 import re
-
-
 from nltk.corpus import stopwords
 import hunspell
 from sklearn.feature_extraction.text import TfidfVectorizer
 from glove import Corpus, Glove
 from preprocessing_text_data.preprocessing import correct_writing, build_post_repr
 import numpy as np
-import itertools
-import csv
 
 from repositories import Repository
 
@@ -18,18 +14,16 @@ from repositories import Repository
 def swap(word, swap_rule):
     return word.replace(swap_rule[0], swap_rule[1])
 
-def prepare(forum_id, filterdate, filename):
+
+def prepare(forum_id, date_from, date_to, filename):
     repository = Repository.Repository()
-    data = repository.get_posts(filterdate, forum_id)
+    data = repository.get_posts(date_from, date_to, forum_id)
     data_frame = pd.DataFrame(data, columns=['post', 'post_date', 'topic_title', 'category'])
     data_frame.post = data_frame.post.apply(lambda x: re.sub(' ?(f|ht)tp(s?)://(.*)[0-9][.][a-z]+', '', x))
     data_frame.post = data_frame.post.apply(lambda x: str.lower(x))
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'[^\w\s]', ' ', x))
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'\d+', ' ', x))
     tokens = data_frame.post.apply(lambda x: nltk.word_tokenize(x))
-    count = tokens.apply(lambda x: len(x))
-    avg = sum(count)/len(count)
-    print("Average post length: " + str(avg))
     hun = hunspell.Hunspell('pl')
     counter = [0]
     tokens_stemmed = tokens.apply(lambda x: correct_writing(hun, x, counter))
@@ -40,13 +34,12 @@ def prepare(forum_id, filterdate, filename):
     return data_frame
 
 
-def do_tfidf(forum_id, filterdate, filename):
-    data_frame  = pd.read_csv("C:/Users/Piotr/Desktop/Inz/ZBIORY_DANYCH/data_sets/forum_haszysz/prepare_glove_window_size_5_vec_dim_100_haszysz_miejscowka_wentylacja04-01-2019-15-09.csv", sep=';')
-    # data_frame = prepare(forum_id, filterdate, "prepare_" + filename)
-   # data_frame.post = data_frame.post.apply(lambda x: " ".join(x))
+def do_tfidf(forum_id, date_from, date_to, filename, max_df,min_df):
+    data_frame = prepare(forum_id, date_from,date_to, "prepare_" + filename)
+    data_frame.post = data_frame.post.apply(lambda x: " ".join(x))
     data_frame.post = data_frame.post.apply(lambda x: re.sub(r'[^\w\s]', '', x))
     stops = set(stopwords.words('polish'))
-    vectorizer = TfidfVectorizer(stop_words=stops, min_df=0.005, max_df=0.5)
+    vectorizer = TfidfVectorizer(stop_words=stops, min_df=min_df, max_df=max_df)
     vectorizer.fit(data_frame.post)
     tfidf = pd.DataFrame(vectorizer.transform(data_frame.post).toarray(), columns=vectorizer.get_feature_names())
     tfidf['category'] = data_frame.category
@@ -59,12 +52,11 @@ def do_tfidf(forum_id, filterdate, filename):
     tfidf.to_csv(filename, sep=';', escapechar='\\', encoding='utf-8')
 
 
-def do_glove(forum_id, filterdate, filename, window_size, vec_dim):
-    # data_frame = prepare(forum_id, filterdate, "prepare_" + filename)
-    data_frame  = pd.read_csv("C:/Users/Piotr/Desktop/Inz/ZBIORY_DANYCH/data_sets/forum_haszysz/prepare_glove_window_size_5_vec_dim_100_haszysz_miejscowka_wentylacja04-01-2019-15-09.csv", sep=';')
-    data_frame.post = data_frame.post.apply(lambda x: re.sub(r'[^\w\s]', '', x))
+def do_glove(forum_id, date_from,date_to, filename, window_size, vec_dim, max_df,min_df):
+    data_frame = prepare(forum_id, date_from, date_to, "prepare_" + filename)
+    data_frame.post = data_frame.post.apply(lambda x: " ".join(x))
     stops = set(stopwords.words('polish'))
-    vectorizer = TfidfVectorizer(stop_words=stops, min_df=0.005, max_df=0.5, use_idf=False)
+    vectorizer = TfidfVectorizer(stop_words=stops, min_df=min_df, max_df=max_df, use_idf=False)
     vectorizer.fit(data_frame.post)
     data_frame.post = data_frame.post.apply(lambda x: x.split(" "))
     corpus = Corpus(vectorizer.vocabulary_)
@@ -81,8 +73,3 @@ def do_glove(forum_id, filterdate, filename, window_size, vec_dim):
     representations = representations[representations['delete'] == False]
     representations = representations.drop('delete', axis=1)
     representations.to_csv(filename, sep=';')
-
-
-
-#random change categories
-data_frame = pd.read_csv("C:/Users/Piotr/Desktop/Inz/scrapForumV2/glove_subaru22-12-2018-13-15.csv", sep=';')

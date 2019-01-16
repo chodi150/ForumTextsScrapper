@@ -65,7 +65,7 @@ class Repository:
             categories = list(Entities.Category.select(lambda x: x.forum.forum_id == forum.forum_id))
             return categories
 
-    def get_posts(self, filterdate, forum_id):
+    def get_posts(self, date_from, date_to, forum_id):
         with pny.db_session:
-            data = Entities.db.select(sql_queries.query_all_posts(forum_id, filterdate))
+            data = Entities.db.select(sql_queries.query_all_posts(forum_id, date_from,date_to))
         return data

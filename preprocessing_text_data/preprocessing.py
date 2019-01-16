@@ -21,6 +21,7 @@ fh_dbg_log.setFormatter(formatter)
 logger_dbg.addHandler(fh_dbg_log)
 logger_dbg.propagate = False
 
+
 def is_correct(word, hun):
     try:
         suggested = hun.suggest(word)
@@ -34,7 +35,6 @@ def report_progress(counter):
     counter[0] = counter[0] + 1
     if counter[0] % 100 ==0:
         print("Preprocessed " + str(counter[0]) + " tokens")
-
 
 
 def correct_writing(hun, tokens, counter):
@@ -56,8 +56,8 @@ def correct_writing(hun, tokens, counter):
                 print(str(e))
         else:
             tokens_stemmed.append(hun.stem(tokens[i])[0])
-
     return tokens_stemmed
+
 
 def build_post_repr(tokens, glove):
     representation = np.zeros(glove.no_components)
@@ -71,11 +71,11 @@ def build_post_repr(tokens, glove):
     return data_frame
 
 
-def recures(parent, i):
+def diacritize_recursively(parent, i):
     if i >= len(parent.name):
         return
     if parent.name[i] not in diacrits.keys():
-        recures(parent, i+1)
+        diacritize_recursively(parent, i + 1)
     else:
         word1 = parent.name
         word2 = ""
@@ -83,13 +83,14 @@ def recures(parent, i):
             word2 += parent.name[j] if j != i else diacrits[parent.name[j]]
         n1 = Node(word1, parent = parent)
         n2 = Node(word2, parent = parent)
-        recures(n1, i+1)
-        recures(n2, i+1)
+        diacritize_recursively(n1, i + 1)
+        diacritize_recursively(n2, i + 1)
+
 
 def diacritize_fully(word):
     words = set()
     root = Node(word)
-    recures(root, 0)
+    diacritize_recursively(root, 0)
     for pre, fill, node in RenderTree(root):
         words.add( node.name)
     return words
