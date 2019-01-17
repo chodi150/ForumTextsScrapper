@@ -11,10 +11,6 @@ def url_not_from_other_domain(url, base_domain):
     extracted_domain = urlparse(url)[1]
     extracted_base_domain = urlparse(base_domain)[1]
     return extracted_domain == extracted_base_domain
-    # if "http" in url:
-    #     return False
-    # else:
-    #     return True
 
 
 def build_link(domain, link):
@@ -28,6 +24,14 @@ def build_link(domain, link):
         pass
 
     return new_link
+
+
+def is_url_valid(x):
+    try:
+        result = urlparse(x)
+        return all([result.scheme, result.netloc, result.path])
+    except:
+        return False
 
 
 

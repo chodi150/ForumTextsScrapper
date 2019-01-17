@@ -1,6 +1,7 @@
 import bs4
 from w3lib.html import remove_tags
 
+
 def contents_to_plain_text(contents):
     without_tags = list(filter(lambda x: type(x) is bs4.element.NavigableString, contents))
     without_tags = list(map(lambda x: str(x), without_tags))
@@ -10,6 +11,7 @@ def contents_to_plain_text(contents):
         return effect
 
     return try_to_delete_only_tags(contents)
+
 
 def try_to_delete_only_tags(contents):
     without = list(map(lambda x: str(x), contents))

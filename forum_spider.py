@@ -20,7 +20,7 @@ class CategoriesSpider(scrapy.Spider):
         self.start_urls = [start_url]
         self.base_domain = start_url
         self.scrap_mode = scrap_mode
-        self.logger_dbg = logging_util.get_logger()
+        self.logger_dbg = logging_util.get_logger("debug.log")
         self.rule_provider = rp.RuleProvider()
         self.rule_provider.prepare_model()
         self.mappings = self.rule_provider.mapper.mappings

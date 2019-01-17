@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 import hunspell
 from sklearn.feature_extraction.text import TfidfVectorizer
 from glove import Corpus, Glove
-from preprocessing_text_data.preprocessing import correct_writing, build_post_repr
+from text_processing_tools.preprocessing import correct_writing, build_post_repr
 import numpy as np
 
 from repositories import Repository

@@ -3,23 +3,11 @@ import numpy as np
 import logging
 from anytree import Node, RenderTree
 from collections import Counter
-
+from util import logging_util
 
 diacrits = dict([("a", "ą"), ("e", "ę"), ("c", "ć"), ("z", "ź"), ("z", "ź"), ("l", "ł"), ("s", "ś"), ("o", "ó")])
 
-logger_dbg = logging.getLogger("dbg")
-logger_dbg.setLevel(logging.DEBUG)
-fh_dbg_log = logging.FileHandler('correctingwriting.log', mode='w', encoding='utf-8')
-fh_dbg_log.setLevel(logging.DEBUG)
-
-# Print time, logger-level and the call's location in a source file.
-formatter = logging.Formatter(
-    '%(asctime)s-%(levelname)s(%(module)s:%(lineno)d)  %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S')
-fh_dbg_log.setFormatter(formatter)
-
-logger_dbg.addHandler(fh_dbg_log)
-logger_dbg.propagate = False
+logger_dbg = logging_util.get_logger("correcting.log")
 
 
 def is_correct(word, hun):
@@ -81,13 +69,33 @@ def diacritize_recursively(parent, i):
         word2 = ""
         for j in range(0, len(parent.name)):
             word2 += parent.name[j] if j != i else diacrits[parent.name[j]]
-        n1 = Node(word1, parent = parent)
-        n2 = Node(word2, parent = parent)
+
+        n1 = Node(word1, parent=parent)
+        n2 = Node(word2, parent=parent)
         diacritize_recursively(n1, i + 1)
         diacritize_recursively(n2, i + 1)
+        n3 = execute_special_action_if_z_available(parent, i)
+        if n3 is not None:
+            diacritize_recursively(n3, i + 1)
+
+
+def execute_special_action_if_z_available(parent, i):
+    word3=""
+    for j in range(0, len(parent.name)):
+        word3 += parent.name[j] if j != i else get_diacrits_wrapped(parent.name[j])
+    return Node(word3, parent=parent)
+
+
+def get_diacrits_wrapped(letter):
+    return diacrits[letter] if letter != "z" else "ż"
 
 
 def diacritize_fully(word):
+    """
+    str -> set(str)
+
+    Return sets of all possiblities of replacing letters with diacrit signs
+    """
     words = set()
     root = Node(word)
     diacritize_recursively(root, 0)
