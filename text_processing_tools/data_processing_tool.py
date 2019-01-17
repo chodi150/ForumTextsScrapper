@@ -7,9 +7,12 @@ helper = polish_month_parser.PolishMonthHelper()
 
 
 def substitute_polish_month(expression):
+    matching_abbreviations = []
     for abb in helper.all_months_abbreviations:
         if abb in expression:
-            expression = expression.replace(abb, helper.get_month(abb))
+            matching_abbreviations.append(abb)
+    longest_matching = max(matching_abbreviations, key=len)
+    expression = expression.replace(longest_matching, helper.get_month(longest_matching))
     return expression
 
 
@@ -25,6 +28,7 @@ def parse_date(contents):
             pass
     logging.error("[NODATE] Not found date in expression:" + "".join(without_tags))
     return None
+
 
 def parse_english_date(date):
     date_string = ''.join(date)

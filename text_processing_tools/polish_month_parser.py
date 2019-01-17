@@ -7,7 +7,7 @@ class PolishMonthHelper:
         self.months[1] = {"sty", "styczeń", "styczniu", "styczen", "stycznia", "stycz"}
         self.months[2] = {"lut", "luty", "lutego", "lutym"}
         self.months[3] = {"mar", "marzec", "marca", "marcu"}
-        self.months[4] = {"kwie", "kwiecień", "kw", "kwietnia", "kwietniu", "kwiecien"}
+        self.months[4] = {"kwie", "kwiecień", "kw", "kwietnia", "kwietniu", "kwiecien", "kwi"}
         self.months[5] = {"maj", "maja", "maju"}
         self.months[6] = {"cze", "czer", "czerwiec", "czerwca", "czerwcu", "czerw"}
         self.months[7] = {"lip", "lipiec", "lipca", "lipcu", }

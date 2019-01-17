@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import logging
+from util import logging_util
 from bs4 import BeautifulSoup
 from util import rule_provider as rp, html_util
 from properties import mapping as m
@@ -14,25 +14,13 @@ from util.html_util import build_link
 class CategoriesSpider(scrapy.Spider):
     name = 'categories'
     repository = Repository.Repository()
-    logger_dbg = logging.getLogger("dbg")
-    logger_dbg.setLevel(logging.DEBUG)
-    fh_dbg_log = logging.FileHandler('debug.log', mode='w', encoding='utf-8')
-    fh_dbg_log.setLevel(logging.DEBUG)
-
-    # Print time, logger-level and the call's location in a source file.
-    formatter = logging.Formatter(
-        '%(asctime)s-%(levelname)s(%(module)s:%(lineno)d)  %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
-    fh_dbg_log.setFormatter(formatter)
-
-    logger_dbg.addHandler(fh_dbg_log)
-    logger_dbg.propagate = False
 
     def __init__(self, start_url, scrap_mode, **kwargs):
         super().__init__(**kwargs)
         self.start_urls = [start_url]
         self.base_domain = start_url
         self.scrap_mode = scrap_mode
+        self.logger_dbg = logging_util.get_logger()
         self.rule_provider = rp.RuleProvider()
         self.rule_provider.prepare_model()
         self.mappings = self.rule_provider.mapper.mappings
@@ -48,7 +36,6 @@ class CategoriesSpider(scrapy.Spider):
                 if html_util.element_has_css_class(html_element):
                     predicted = self.rule_provider.predict(tag, html_element["class"])
                     yield from self.scraping_strategy.execute_strategy(html_element, parent, predicted, tag, self.mappings, self)
-
 
     def parse_categories(self, html_element, predicted, parent):
         category = None
@@ -135,7 +122,6 @@ class CategoriesSpider(scrapy.Spider):
             return new_value
         else:
             return old_value
-
 
     def go_to_next_page(self, html_element, parent, predicted):
         if predicted == self.mappings[m.next_page]:
