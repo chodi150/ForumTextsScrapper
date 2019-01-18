@@ -3,7 +3,7 @@ import datetime
 from datetime import datetime
 from facades import export_representation_facade
 from properties.default_values import *
-
+from properties.export_modes import *
 
 def valid_date(s):
     try:
@@ -14,8 +14,8 @@ def valid_date(s):
 
 parser = argparse.ArgumentParser(description="Help of export module")
 
-parser.add_argument('-f', '--forum', help='Id of forum to export', required=True)
-parser.add_argument('-m', '--mode', help='Vector representation: glove or tfidf', required=True)
+parser.add_argument('-f', '--forum', help='Id of forum to export')
+parser.add_argument('-m', '--mode', help='Vector representation: glove or tfidf or simple post extraction: choose: glove, tfidf, simple', required=True)
 parser.add_argument('-df', '--datefrom',
                     help='Posts written from the date, use format: y-m-d, default value: 1970-1-1',
                     type=valid_date)
@@ -34,12 +34,15 @@ parser.add_argument('-maxdf', '--maxdf',
                     required=False, type=float)
 args = parser.parse_args()
 
-
 current_date = datetime.datetime.now().strftime("%d-%m-%Y-%H-%M")
-forum_id = int(args.forum)
 mode = args.mode
+
+if mode != forums_mode and args.forum is None:
+    raise argparse.ArgumentTypeError("Forum id must be given when mode diferent from 'forums'!")
+
+forum_id = None if mode == forums_mode else int(args.forum)
 filename = "output" if args.filename is None else args.filename
-filename = filename + current_date + ".csv"
+filename = mode + "_" + filename + current_date + ".csv"
 
 date_from = date_from if args.datefrom is None else args.datefrom
 date_to = date_to if args.dateto is None else args.dateto
@@ -49,16 +52,16 @@ max_df = max_df if args.maxdf is None else args.maxdf
 min_df = min_df if args.mindf is None else args.mindf
 
 
-
-if mode == "glove":
+if mode == glove_mode:
     filename = "window_size_" + str(glove_window_size) + "_vec_dim_" + str(glove_vector_dimension) + "_" + filename
-    filename = "glove_" + filename
     export_representation_facade.do_glove(forum_id, date_from, date_to, filename, glove_window_size, glove_vector_dimension, max_df, min_df)
-elif mode == "tfidf":
-    filename = "tfidf_" + filename
+elif mode == tfidf_mode:
     export_representation_facade.do_tfidf(forum_id, date_from, date_to, filename, max_df, min_df)
-elif mode == "prepare":
-    filename = "prepare_" + filename
+elif mode == preprocess_mode:
     export_representation_facade.prepare(forum_id, date_from, date_to, filename)
+elif mode == posts_mode:
+    export_representation_facade.export_posts(forum_id, date_from, date_to, filename)
+elif mode == forums_mode:
+    export_representation_facade.show_all_forums()
 else:
-    print("No such mode - choose glove or tfidf")
+    print("No such mode - choose from:" + all_modes)

@@ -20,7 +20,7 @@ class CategoriesSpider(scrapy.Spider):
         self.start_urls = [start_url]
         self.base_domain = start_url
         self.scrap_mode = scrap_mode
-        self.logger_dbg = logging_util.get_logger("debug.log")
+        self.logger_dbg = logging_util.get_logger("logs/debug")
         self.rule_provider = rp.RuleProvider()
         self.rule_provider.prepare_model()
         self.mappings = self.rule_provider.mapper.mappings
@@ -58,7 +58,6 @@ class CategoriesSpider(scrapy.Spider):
 
         if category is not None and html_util.url_not_from_other_domain(category.link, self.base_domain):
             yield scrapy.Request(url=build_link(self.base_domain, category.link), callback=self.parse, meta={'parent': category})
-
 
     def parse_topics(self, html_element, parent):
         author = None

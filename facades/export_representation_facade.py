@@ -5,6 +5,8 @@ from nltk.corpus import stopwords
 import hunspell
 from sklearn.feature_extraction.text import TfidfVectorizer
 from glove import Corpus, Glove
+
+from config import database_config
 from text_processing_tools.preprocessing import correct_writing, build_post_repr
 import numpy as np
 
@@ -73,3 +75,20 @@ def do_glove(forum_id, date_from,date_to, filename, window_size, vec_dim, max_df
     representations = representations[representations['delete'] == False]
     representations = representations.drop('delete', axis=1)
     representations.to_csv(filename, sep=';')
+
+
+def export_posts(forum_id, date_from,date_to, filename):
+    repository = Repository.Repository()
+    data = repository.get_posts(date_from, date_to, forum_id)
+    df = pd.DataFrame(data, columns=['post', 'post_date', 'topic_title', 'category'])
+    df.to_csv(filename, sep=';', escapechar='\\')
+
+
+def show_all_forums():
+    print("Forums at DB:" + database_config.HOST)
+    print("-------------------------------------")
+    print("forum_id | forum_link")
+    repository = Repository.Repository()
+    forums = repository.get_all_forums()
+    for f in forums:
+        print(str(f.forum_id) + " | " + f.link)

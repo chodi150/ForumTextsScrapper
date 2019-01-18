@@ -3,6 +3,7 @@ import hunspell
 from text_processing_tools import data_processing_tool as dpt
 from text_processing_tools import preprocessing as prp
 
+
 class TestTextProcessingTools(TestCase):
 
     def test_given_string_with_polish_month_when_substituting_then_proper_returned(self):
@@ -19,7 +20,6 @@ class TestTextProcessingTools(TestCase):
         strin_with_date = "1 sie 2000"
         res = dpt.substitute_polish_month(strin_with_date)
         self.assertEquals=("1 8 2000", res)
-
 
     def test_given_word_without_diacritics_when_diacritizing_then_proper_options_done(self):
         word = "isc"
@@ -50,13 +50,11 @@ class TestTextProcessingTools(TestCase):
     def test_given_long_word_with_z_without_diacritics3_when_diacritizing_then_proper_options_done(self):
         word = "wiez"
         res = prp.diacritize_fully(word)
-        print(res)
         self.assertTrue("więż" in res)
 
     def test_given_long_word_with_z_without_diacritics4_when_diacritizing_then_proper_options_done(self):
         word = "wieza"
         res = prp.diacritize_fully(word)
-        print(res)
         self.assertTrue("wieża" in res)
 
     def test_given_incorrect_word_when_testing_then_false(self):

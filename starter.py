@@ -1,8 +1,8 @@
 from scrapy.crawler import CrawlerProcess
 import argparse
 from properties.scrap_modes import *
-import forum_spider
-from urllib.parse import urlparse
+from spider import forum_spider
+
 
 def start_scraping(start_url, scrap_mode):
     process = CrawlerProcess({
@@ -14,7 +14,7 @@ def start_scraping(start_url, scrap_mode):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f','--forum', help='Forum link - necessary to start scraping', required=True)
-parser.add_argument('-m', '--mode', help='Mode of scraping: full, only_categories, chosen_categories', required=True)
+parser.add_argument('-m', '--mode', help='Mode of scraping: full_scraping, only_categories, chosen_categories', required=True)
 args = parser.parse_args()
 mode = args.mode
 
@@ -23,7 +23,6 @@ if mode != full_scraping and mode != only_categories and mode != chosen_categori
     exit(1)
 
 forum_link = args.forum
-
 
 
 start_scraping(forum_link, mode)

@@ -7,7 +7,7 @@ from util import logging_util
 
 diacrits = dict([("a", "ą"), ("e", "ę"), ("c", "ć"), ("z", "ź"), ("z", "ź"), ("l", "ł"), ("s", "ś"), ("o", "ó")])
 
-logger_dbg = logging_util.get_logger("correcting.log")
+logger_dbg = logging_util.get_logger("logs/correcting")
 
 
 def is_correct(word, hun):
