@@ -9,7 +9,7 @@ from text_processing_tools import data_processing_tool as dpt
 from repositories import Repository
 from scrap_strategies import scraping_strategy_builder
 from util.html_util import build_link
-
+from filtering import filtering
 
 class CategoriesSpider(scrapy.Spider):
     name = 'categories'
@@ -88,6 +88,8 @@ class CategoriesSpider(scrapy.Spider):
             self.logger_dbg.info("Can't find topic inside: " + str(html_element))
             return
 
+        if not filtering.topic_meets_criterions(title, author, date):
+            return
         topic = self.repository.save_topic(author, date, link, parent, title)
         self.logger_dbg.info("Scrapped topic: " + title + " with id: " + str(topic.topic_id))
         yield scrapy.Request(dont_filter=True, url=build_link(self.base_domain, topic.link), callback=self.parse,
@@ -113,7 +115,7 @@ class CategoriesSpider(scrapy.Spider):
         time_tags = html_element.findAll("time")
         if len(time_tags) > 0:
             date = dpt.parse_english_date(time_tags[0].contents)
-        if content is not None:
+        if content is not None and filtering.post_meets_criterions(content, author, date):
             self.repository.save_post(author, content, date, parent)
 
     def assign_new_value_if_changed_and_not_null(self, old_value:str, new_value:str):
