@@ -24,11 +24,11 @@ class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
         if not self.strategy_initialized:
             yield from self.prepare_strategy(spider)
         else:
-            if predicted == mappings[m.topic_whole]:
+            if predicted == mappings.get_mapping(m.topic_whole):
                 yield from spider.parse_topics(html_element, parent)
-            if predicted == mappings[m.next_page] or predicted == mappings[m.next_page_link]:
+            if predicted == mappings.get_mapping(m.next_page) or predicted == mappings.get_mapping(m.next_page_link):
                 yield from spider.go_to_next_page(html_element, parent, predicted)
-            if predicted == mappings[m.post_whole]:
+            if predicted == mappings.get_mapping(m.post_whole):
                 spider.parse_posts(html_element, parent)
 
     def prepare_strategy(self, spider):

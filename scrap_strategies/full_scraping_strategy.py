@@ -17,12 +17,12 @@ class FullScrapingStrategy(ScrapingStrategy):
         return self.forum
 
     def execute_strategy(self, html_element, parent, predicted, tag, mappings, spider):
-        if predicted in (mappings[m.category_whole], mappings[m.category_title]):
+        if predicted in (mappings.get_mapping(m.category_whole), mappings.get_mapping(m.category_title)):
             yield from spider.parse_categories(html_element, predicted, parent)
-        if predicted == mappings[m.topic_whole]:
+        if predicted == mappings.get_mapping(m.topic_whole):
             yield from spider.parse_topics(html_element, parent)
-        if predicted in (mappings[m.next_page], predicted == mappings[m.next_page_link]):
+        if predicted in (mappings.get_mapping(m.next_page), predicted == mappings.get_mapping(m.next_page_link)):
             yield from spider.go_to_next_page(html_element, parent, predicted)
-        if predicted == mappings[m.post_whole]:
+        if predicted == mappings.get_mapping(m.post_whole):
             spider.parse_posts(html_element, parent)
 

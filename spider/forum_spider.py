@@ -23,7 +23,6 @@ class CategoriesSpider(scrapy.Spider):
         self.logger_dbg = logging_util.get_logger("logs/debug")
         self.rule_provider = rp.RuleProvider()
         self.rule_provider.prepare_model()
-        self.mappings = self.rule_provider.mapper.mappings
         self.scraping_strategy = scraping_strategy_builder.get_strategy(scrap_mode)
         self.forum = self.scraping_strategy.init_strategy(self.base_domain)
 
@@ -35,17 +34,17 @@ class CategoriesSpider(scrapy.Spider):
             for html_element in elements_with_tag:
                 if html_util.element_has_css_class(html_element):
                     predicted = self.rule_provider.predict(tag, html_element["class"])
-                    yield from self.scraping_strategy.execute_strategy(html_element, parent, predicted, tag, self.mappings, self)
+                    yield from self.scraping_strategy.execute_strategy(html_element, parent, predicted, tag, self.rule_provider, self)
 
     def parse_categories(self, html_element, predicted, parent):
         category = None
-        if predicted == self.mappings[m.category_title]:
+        if predicted == self.rule_provider.get_mapping(m.category_title):
             link = html_element['href']
             title = str(html_element.contents[0])
             category = self.repository.save_category(title, link, parent, self.forum)
             self.logger_dbg.info(title + " " + self.base_domain + link)
 
-        if predicted == self.mappings[m.category_whole]:
+        if predicted == self.rule_provider.get_mapping(m.category_whole):
             try:
                 first_a_html_element_inside_whole = html_element.findAll("a")[0]
                 link = first_a_html_element_inside_whole['href']
@@ -69,13 +68,13 @@ class CategoriesSpider(scrapy.Spider):
             for elem in elements_inside_tag:
                 if html_util.element_has_css_class(elem):
                     predicted = self.rule_provider.predict(tag, elem["class"])
-                    if predicted == self.mappings[m.topic_title]:
+                    if predicted == self.rule_provider.get_mapping(m.topic_title):
                         title = elem.contents[0]
                         link = elem['href']
                         self.logger_dbg.info(title + " " + link)
-                    if predicted == self.mappings[m.topic_author]:
+                    if predicted == self.rule_provider.get_mapping(m.topic_author):
                         author = elem.contents[0]
-                    if predicted == self.mappings[m.topic_date]:
+                    if predicted == self.rule_provider.get_mapping(m.topic_date):
                         date = dpt.parse_date(elem.contents)
 
         time_tags = html_element.findAll("time")
@@ -105,11 +104,11 @@ class CategoriesSpider(scrapy.Spider):
             for elem in elements_with_tag:
                 if html_util.element_has_css_class(elem):
                     predicted = self.rule_provider.predict(tag, elem["class"])
-                    if predicted == self.mappings[m.post_body]:
+                    if predicted == self.rule_provider.get_mapping(m.post_body):
                         content = self.assign_new_value_if_changed_and_not_null(content, ppt.contents_to_plain_text(elem.contents))
-                    if predicted == self.mappings[m.topic_author]:
+                    if predicted == self.rule_provider.get_mapping(m.topic_author):
                         author = elem.contents[0]
-                    if predicted == self.mappings[m.post_date]:
+                    if predicted == self.rule_provider.get_mapping(m.post_date):
                         date = dpt.parse_date(elem.contents)
 
         time_tags = html_element.findAll("time")
@@ -125,7 +124,7 @@ class CategoriesSpider(scrapy.Spider):
             return old_value
 
     def go_to_next_page(self, html_element, parent, predicted):
-        if predicted == self.mappings[m.next_page]:
+        if predicted == self.rule_provider.get_mapping(m.next_page):
             try:
                 first_a_html_element_inside_whole = html_element.findAll("a")[0]
                 link = first_a_html_element_inside_whole['href']
@@ -135,7 +134,7 @@ class CategoriesSpider(scrapy.Spider):
             except BaseException as e:
                 self.logger_dbg.error("Couldn't go to next page of: " + str(parent) + " due to: " + str(e))
                 self.logger_dbg.error("Element that fucked up: " + str(html_element))
-        elif predicted == self.mappings[m.next_page_link]:
+        elif predicted == self.rule_provider.get_mapping(m.next_page_link):
             self.logger_dbg.info("Going to next page: " +str(parent) + " url: " + html_element['href'])
             yield scrapy.Request(url= build_link(self.base_domain, html_element['href']), callback=self.parse,
                                  meta={'parent': parent})
