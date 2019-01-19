@@ -2,7 +2,7 @@ from scrapy.crawler import CrawlerProcess
 import argparse
 from properties.scrap_modes import *
 from spider import forum_spider
-
+from util import html_util
 
 def start_scraping(start_url, scrap_mode):
     process = CrawlerProcess({
@@ -19,10 +19,13 @@ args = parser.parse_args()
 mode = args.mode
 
 if mode != full_scraping and mode != only_categories and mode != chosen_categories:
-    print("Not found such mode. Available are following modes: full, only_categories, chosen_categories")
+    print("Input mode not found! The following modes are available: full_scraping, only_categories, chosen_categories")
     exit(1)
 
 forum_link = args.forum
 
+if not html_util.is_url_valid(forum_link):
+    print("Forum link is invalid, try again with full URL!")
+    exit(1)
 
 start_scraping(forum_link, mode)
