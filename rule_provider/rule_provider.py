@@ -54,7 +54,6 @@ class RuleProvider:
         classes_with_deleted_spaces = self.rules['class'].map(lambda a: a.replace(" ", ""))
         self.possible_classes = set(classes_with_deleted_spaces)
 
-
     def get_mapping(self, key):
         if key not in self.value_encoder.classes_:
             return max(self.value_encoder.transform(self.value_encoder.classes_)) + 1

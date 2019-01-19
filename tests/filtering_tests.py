@@ -207,3 +207,21 @@ class TestTextProcessingTools(TestCase):
         res = post_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2005, 10, 1))
 
         self.assertTrue(res)
+
+    def test_given_different_new_and_old_values_when_testing_then_new_returned(self):
+        old = "Unfall"
+        new = "Drogen"
+        res = assign_new_value_if_changed_and_not_null(old, new)
+        self.assertEqual(res, new)
+
+    def test_given_same_new_and_old_values_when_testing_then_old_returned(self):
+        old = "Unfall"
+        new = "Unfall"
+        res = assign_new_value_if_changed_and_not_null(old, new)
+        self.assertEqual(res, old)
+
+    def test_given_differen_new_and_old_values_new_is_empty_when_testing_then_new_returned(self):
+        old = "Unfall"
+        new = ""
+        res = assign_new_value_if_changed_and_not_null(old, new)
+        self.assertEqual(res, old)

@@ -106,7 +106,7 @@ class CategoriesSpider(scrapy.Spider):
                 if html_util.element_has_css_class(elem):
                     predicted = self.rule_provider.predict(tag, elem["class"])
                     if predicted == self.rule_provider.get_mapping(m.post_body):
-                        content = self.assign_new_value_if_changed_and_not_null(content, ppt.contents_to_plain_text(elem.contents))
+                        content = filtering.assign_new_value_if_changed_and_not_null(content, ppt.contents_to_plain_text(elem.contents))
                     if predicted == self.rule_provider.get_mapping(m.topic_author):
                         author = elem.contents[0]
                     if predicted == self.rule_provider.get_mapping(m.post_date):
@@ -118,11 +118,7 @@ class CategoriesSpider(scrapy.Spider):
         if content is not None and filtering.post_meets_criterions(content, author, date):
             self.repository.save_post(author, content, date, parent)
 
-    def assign_new_value_if_changed_and_not_null(self, old_value:str, new_value:str):
-        if old_value is None or (new_value != old_value and new_value != ""):
-            return new_value
-        else:
-            return old_value
+
 
     def go_to_next_page(self, html_element, parent, predicted):
         if predicted == self.rule_provider.get_mapping(m.next_page):
