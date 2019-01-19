@@ -1,6 +1,6 @@
 from entities import Entities
 import pony.orm as pny
-from util import sql_queries
+from repositories import sql_queries
 from util.logging_util import get_logger
 
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from util import html_util
-from util import sql_queries
+from repositories import sql_queries
 import datetime
 import sqlparse
 

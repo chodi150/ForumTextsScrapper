@@ -2,7 +2,8 @@
 import scrapy
 from util import logging_util
 from bs4 import BeautifulSoup
-from util import rule_provider as rp, html_util
+from util import html_util
+from rule_provider import rule_provider as rp
 from properties import mapping as m
 from text_processing_tools import post_processing_tool as ppt
 from text_processing_tools import data_processing_tool as dpt

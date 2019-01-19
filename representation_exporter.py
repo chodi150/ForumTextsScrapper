@@ -1,7 +1,9 @@
 import argparse
 import datetime
 from datetime import datetime
-from facades import export_representation_facade
+
+import vector_representation.preprocessing
+from exporter import exporter
 from properties.default_values import *
 from properties.export_modes import *
 
@@ -54,14 +56,14 @@ min_df = min_df if args.mindf is None else args.mindf
 
 if mode == glove_mode:
     filename = "window_size_" + str(glove_window_size) + "_vec_dim_" + str(glove_vector_dimension) + "_" + filename
-    export_representation_facade.do_glove(forum_id, date_from, date_to, filename, glove_window_size, glove_vector_dimension, max_df, min_df)
+    exporter.do_glove(forum_id, date_from, date_to, filename, glove_window_size, glove_vector_dimension, max_df, min_df)
 elif mode == tfidf_mode:
-    export_representation_facade.do_tfidf(forum_id, date_from, date_to, filename, max_df, min_df)
+    exporter.do_tfidf(forum_id, date_from, date_to, filename, max_df, min_df)
 elif mode == preprocess_mode:
-    export_representation_facade.prepare(forum_id, date_from, date_to, filename)
+    vector_representation.preprocessing.preprocess_texts_from_given_forum(forum_id, date_from, date_to, filename)
 elif mode == posts_mode:
-    export_representation_facade.export_posts(forum_id, date_from, date_to, filename)
+    exporter.export_posts(forum_id, date_from, date_to, filename)
 elif mode == forums_mode:
-    export_representation_facade.show_all_forums()
+    exporter.show_all_forums()
 else:
     print("No such mode - choose from:" + all_modes)
