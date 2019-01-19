@@ -1,18 +1,10 @@
 import argparse
-import datetime
-from datetime import datetime
 
 import vector_representation.preprocessing
 from exporter import exporter
 from properties.default_values import *
 from properties.export_modes import *
-
-def valid_date(s):
-    try:
-        return datetime.datetime.strptime(s, "%Y-%m-%d")
-    except ValueError:
-        msg = "Not a valid date: '{0}'.".format(s)
-        raise argparse.ArgumentTypeError(msg)
+from text_processing_tools.data_processing_tool import valid_date
 
 parser = argparse.ArgumentParser(description="Help of export module")
 

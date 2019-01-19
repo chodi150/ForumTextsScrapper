@@ -1,3 +1,6 @@
+import argparse
+import datetime
+
 from text_processing_tools import polish_month_parser
 import dateutil.parser as dparser
 import bs4
@@ -35,3 +38,10 @@ def parse_english_date(date):
     date = dparser.parse(date_string, fuzzy=True)
     return date
 
+
+def valid_date(s):
+    try:
+        return datetime.datetime.strptime(s, "%Y-%m-%d")
+    except ValueError:
+        msg = "Not a valid date: '{0}'.".format(s)
+        raise argparse.ArgumentTypeError(msg)
