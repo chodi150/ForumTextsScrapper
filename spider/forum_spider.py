@@ -130,7 +130,7 @@ class CategoriesSpider(scrapy.Spider):
                                      meta={'parent': parent})
             except BaseException as e:
                 self.logger_dbg.error("Couldn't go to next page of: " + str(parent) + " due to: " + str(e))
-                self.logger_dbg.error("Element that fucked up: " + str(html_element))
+                self.logger_dbg.error("Element that caused the problem: " + str(html_element))
         elif predicted == self.rule_provider.get_mapping(m.next_page_link):
             self.logger_dbg.info("Going to next page: " +str(parent) + " url: " + html_element['href'])
             yield scrapy.Request(url= build_link(self.base_domain, html_element['href']), callback=self.parse,
