@@ -23,8 +23,8 @@ def parse_date(contents):
     without_tags = list(filter(lambda x: type(x) is bs4.element.NavigableString, contents))
     without_tags = list(map(lambda x: str(x), without_tags))
     for expression in without_tags:
-        expression = substitute_polish_month(expression)
         try:
+            expression = substitute_polish_month(expression)
             date = dparser.parse(expression, fuzzy=True, dayfirst=True)
             return date
         except BaseException as e:
