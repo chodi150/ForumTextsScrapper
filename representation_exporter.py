@@ -1,6 +1,6 @@
 import argparse
 
-import vector_representation.preprocessing
+import vector_representations.preprocessing
 from exporter import exporter
 from properties.default_values import *
 from properties.export_modes import *
@@ -52,7 +52,7 @@ if mode == glove_mode:
 elif mode == tfidf_mode:
     exporter.do_tfidf(forum_id, date_from, date_to, filename, max_df, min_df)
 elif mode == preprocess_mode:
-    vector_representation.preprocessing.preprocess_texts_from_given_forum(forum_id, date_from, date_to, filename)
+    vector_representations.preprocessing.preprocess_texts_from_given_forum(forum_id, date_from, date_to, filename)
 elif mode == posts_mode:
     exporter.export_posts(forum_id, date_from, date_to, filename)
 elif mode == forums_mode:

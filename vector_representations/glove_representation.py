@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from text_processing_tools.preprocessing import build_post_repr
-from vector_representation.preprocessing import preprocess_texts_from_given_forum
+from vector_representations.preprocessing import preprocess_texts_from_given_forum
 
 
 def transform_to_glove(date_from, date_to, filename, forum_id, max_df, min_df, vec_dim, window_size):

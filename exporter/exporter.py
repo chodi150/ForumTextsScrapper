@@ -3,8 +3,8 @@ import pandas as pd
 from config import database_config
 
 from repositories import Repository
-from vector_representation.glove_representation import transform_to_glove
-from vector_representation.tfidf_representation import transform_to_tfidf
+from vector_representations.glove_representation import transform_to_glove
+from vector_representations.tfidf_representation import transform_to_tfidf
 
 
 def do_tfidf(forum_id, date_from, date_to, filename, max_df,min_df):

@@ -8,15 +8,15 @@ li;threadbit ;topic_whole
 li;ipsDataItem ipsDataItem_responsivePhoto   ;topic_whole
 a;topictitle;topic_title
 a;title;topic_title
-a;username;topic_author
-a;ipsType_break;topic_author
-a;username understate;topic_author
+a;username;author
+a;ipsType_break;author
+a;username understate;author
 div;topic-poster responsive-hide left-box;topic_date
 div;postbody;post_whole
 li;postbitlegacy postbitim postcontainer old;post_whole
 article;cPost ipsBox  ipsComment  ipsComment_parent ipsClearfix ipsClear ipsColumns ipsColumns_noSpacing ipsColumns_collapsePhone  ;post_whole
-a;username;post_author
-div;username_container;post_author
+a;username;author
+div;username_container;author
 div;content;post_body
 div;ipsType_normal ipsType_richText ipsContained;post_body
 blockquote;postcontent restore ;post_body
@@ -27,3 +27,5 @@ span;prev_next;next_page
 li;ipsPagination_next;next_page
 a;button button-icon-only;next_page_link
 a;right-box right;next_page_link
+span;label;topic_date
+h3;ipsType_sectionHead cAuthorPane_author ipsType_blendLinks ipsType_break;author

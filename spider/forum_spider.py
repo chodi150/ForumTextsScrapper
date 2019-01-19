@@ -12,6 +12,7 @@ from scrap_strategies import scraping_strategy_builder
 from util.html_util import build_link
 from filtering import filtering
 
+
 class CategoriesSpider(scrapy.Spider):
     name = 'categories'
     repository = Repository.Repository()
@@ -73,7 +74,7 @@ class CategoriesSpider(scrapy.Spider):
                         title = elem.contents[0]
                         link = elem['href']
                         self.logger_dbg.info(title + " " + link)
-                    if predicted == self.rule_provider.get_mapping(m.topic_author):
+                    if predicted == self.rule_provider.get_mapping(m.author):
                         author = elem.contents[0]
                     if predicted == self.rule_provider.get_mapping(m.topic_date):
                         date = dpt.parse_date(elem.contents)
@@ -107,7 +108,7 @@ class CategoriesSpider(scrapy.Spider):
                     predicted = self.rule_provider.predict(tag, elem["class"])
                     if predicted == self.rule_provider.get_mapping(m.post_body):
                         content = filtering.assign_new_value_if_changed_and_not_null(content, ppt.contents_to_plain_text(elem.contents))
-                    if predicted == self.rule_provider.get_mapping(m.topic_author):
+                    if predicted == self.rule_provider.get_mapping(m.author):
                         author = elem.contents[0]
                     if predicted == self.rule_provider.get_mapping(m.post_date):
                         date = dpt.parse_date(elem.contents)

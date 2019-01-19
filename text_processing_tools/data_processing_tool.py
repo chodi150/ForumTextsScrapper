@@ -14,6 +14,8 @@ def substitute_polish_month(expression):
     for abb in helper.all_months_abbreviations:
         if abb in expression:
             matching_abbreviations.append(abb)
+    if len(matching_abbreviations) ==0:
+        return expression
     longest_matching = max(matching_abbreviations, key=len)
     expression = expression.replace(longest_matching, helper.get_month(longest_matching))
     return expression

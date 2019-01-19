@@ -5,7 +5,7 @@ import pandas as pd
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from vector_representation.preprocessing import preprocess_texts_from_given_forum
+from vector_representations.preprocessing import preprocess_texts_from_given_forum
 
 
 def transform_to_tfidf(date_from, date_to, filename, forum_id, max_df, min_df):
