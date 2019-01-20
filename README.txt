@@ -16,7 +16,7 @@ Przykładową listę można znaleźć na:
 https://github.com/bieli/stopwords/blob/master/polish.stopwords.txt
 
 Natomiast w przypadku braku słownika dla języka polskiego
-w lokalizacji:
+w lokalizacji hunspella, zawierającej inne słowniki
 dodać pliki: pl_PL.aff oraz pl_PL.dic,  które można znaleźć na: https://sjp.pl/slownik/en/
 
 Ponadto niezbędne jest skonfigurowanie połączenia do bazy danych PostgreSQL w pliku config/database_config.py:
