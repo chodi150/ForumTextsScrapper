@@ -1,4 +1,4 @@
 USERNAME = "postgres"
-PASSWORD = "bryant5"
-HOST = "51.38.134.200"
+PASSWORD = "postgres"
+HOST = "localhost"
 DATABASE_NAME = "scrap2"

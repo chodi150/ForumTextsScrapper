@@ -9,7 +9,7 @@ from text_processing_tools.data_processing_tool import valid_date
 parser = argparse.ArgumentParser(description="Help of export module")
 
 parser.add_argument('-f', '--forum', help='Id of forum to export, you can check id of forum by starting script with argument -m forums')
-parser.add_argument('-m', '--mode', help='Available modes: glove, tfidf, posts, forums. Check readme for more information about the modes.', required=True)
+parser.add_argument('-m', '--mode', help='Available modes: glove, tfidf, posts, forums, preprocess. Check readme for more information about the modes.', required=True)
 parser.add_argument('-df', '--datefrom',
                     help='Posts written from the date, use format: y-m-d, default value: 1970-1-1',
                     type=valid_date)
