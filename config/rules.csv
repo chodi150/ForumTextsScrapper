@@ -1,31 +1,30 @@
 h2;forumtitle;category_whole
-h3;threadtitle;topic_whole
-h4;ipsDataItem_title ipsType_large ipsType_break;category_whole
 a;forumtitle;category_title
 li;row bg1;topic_whole
 li;row bg2;topic_whole
 li;threadbit ;topic_whole
-li;ipsDataItem ipsDataItem_responsivePhoto   ;topic_whole
 a;topictitle;topic_title
 a;title;topic_title
 a;username;author
-a;ipsType_break;author
 a;username understate;author
 div;topic-poster responsive-hide left-box;topic_date
 div;postbody;post_whole
-li;postbitlegacy postbitim postcontainer old;post_whole
-article;cPost ipsBox  ipsComment  ipsComment_parent ipsClearfix ipsClear ipsColumns ipsColumns_noSpacing ipsColumns_collapsePhone  ;post_whole
-a;username;author
-div;username_container;author
 div;content;post_body
-div;ipsType_normal ipsType_richText ipsContained;post_body
 blockquote;postcontent restore ;post_body
 p;author;post_date
-span;date;post_date
-li;arrow next;next_page
-span;prev_next;next_page
-li;ipsPagination_next;next_page
+li;arrow next;next_page_whole
+span;prev_next;next_page_whole
 a;button button-icon-only;next_page_link
 a;right-box right;next_page_link
 span;label;topic_date
 h3;ipsType_sectionHead cAuthorPane_author ipsType_blendLinks ipsType_break;author
+h3;threadtitle;topic_whole
+h4;ipsDataItem_title ipsType_large ipsType_break;category_whole
+li;ipsDataItem ipsDataItem_responsivePhoto   ;topic_whole
+a;ipsType_break;author
+li;postbitlegacy postbitim postcontainer old;post_whole
+article;cPost ipsBox  ipsComment  ipsComment_parent ipsClearfix ipsClear ipsColumns ipsColumns_noSpacing ipsColumns_collapsePhone  ;post_whole
+div;username_container;author
+div;ipsType_normal ipsType_richText ipsContained;post_body
+li;ipsPagination_next;next_page_whole
+span;date;post_date
