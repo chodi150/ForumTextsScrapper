@@ -12,11 +12,16 @@ def start_scraping(start_url, scrap_mode):
     process.start()
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-f','--forum', help='Forum link - necessary to start scraping', required=True)
+parser = argparse.ArgumentParser(description="Keep in mind, that additional filtering criterion"
+                                             " can be specified in config/filtering_config.py file."
+                                             ""
+                                             "Make sure you specified proper database connection in config/database_config.py file")
+parser.add_argument('-f', '--forum', help='Forum link - necessary to start scraping', required=True)
 parser.add_argument('-m', '--mode', help='Mode of scraping: full_scraping, only_categories, chosen_categories', required=True)
 args = parser.parse_args()
 mode = args.mode
+
+
 
 if mode != full_scraping and mode != only_categories and mode != chosen_categories:
     print("Input mode not found! The following modes are available: full_scraping, only_categories, chosen_categories")

@@ -17,8 +17,8 @@ def save_tfidf_to_csv(filename, tfidf, size_of_dictionary):
     tfidf.to_csv(filename, sep=';', escapechar='\\', encoding='utf-8')
 
 
-def do_glove(forum_id, date_from,date_to, filename, window_size, vec_dim, max_df,min_df):
-    representations, size_of_dictionary = transform_to_glove(date_from, date_to, filename, forum_id, max_df, min_df, vec_dim, window_size)
+def do_glove(forum_id, date_from,date_to, filename, window_size, vec_dim, max_df,min_df, niter):
+    representations, size_of_dictionary = transform_to_glove(date_from, date_to, filename, forum_id, max_df, min_df, vec_dim, window_size, niter)
     save_glove_to_csv(filename, representations, size_of_dictionary)
 
 
