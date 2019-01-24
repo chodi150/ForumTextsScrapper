@@ -1,4 +1,4 @@
-1. Opis programu
+﻿1. Opis programu
 Program jest implementacją zautomatyzowanego procesu ekstrakcji tekstów z forów internetowych.
 Umożliwia pobieranie danych tekstowych z zadanego forum oraz eksport treści oraz ich reprezentacji wektorowych.
 Możliwa jest obsługa następujących platform forów: phpBB, Invision oraz vBulletin.
@@ -17,7 +17,7 @@ https://github.com/bieli/stopwords/blob/master/polish.stopwords.txt
 
 Natomiast w przypadku braku słownika dla języka polskiego
 w lokalizacji hunspella, zawierającej inne słowniki
-dodać pliki: pl_PL.aff oraz pl_PL.dic,  które można znaleźć na: https://sjp.pl/slownik/en/
+dodać pliki: pl.aff oraz pl.dic,  które można znaleźć na: https://sjp.pl/slownik/en/ lub w folderze extras
 
 Ponadto niezbędne jest skonfigurowanie połączenia do bazy danych PostgreSQL w pliku config/database_config.py:
 USERNAME = "postgres"
