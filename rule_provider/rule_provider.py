@@ -51,6 +51,10 @@ class RuleProvider:
         self.possible_tags = set(self.rules['tag'])
         self.possible_tags_topics = set(self.rules[self.rules['value'].str.contains('topic')]['tag'])
         self.possible_tags_posts = set(self.rules[self.rules['value'].str.contains('post')]['tag'])
+        possible_tags_with_author = set(self.rules[self.rules['value'].str.contains('author')]['tag'])
+        for x in possible_tags_with_author:
+            self.possible_tags_topics.add(x)
+            self.possible_tags_posts.add(x)
         classes_with_deleted_spaces = self.rules['class'].map(lambda a: a.replace(" ", ""))
         self.possible_classes = set(classes_with_deleted_spaces)
 

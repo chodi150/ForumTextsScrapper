@@ -21,7 +21,7 @@ class Repository:
         try:
             with pny.db_session:
                 return Entities.Topic(title=title, link=link,
-                                      author='' if author is None else author,
+                                      author='' if author is None else str(author),
                                       date=date,
                                       category=parent.category_id)
         except BaseException as e:
@@ -32,7 +32,7 @@ class Repository:
         try:
             with pny.db_session:
                 Entities.Post(content=content, topic=parent.topic_id,
-                              author='' if author is None else author,
+                              author='' if author is None else str(author),
                               date=date)
         except BaseException as e:
             self.logger.error("Save post: " + str(e))

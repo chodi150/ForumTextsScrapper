@@ -24,6 +24,7 @@ def substitute_polish_month(expression):
 def parse_date(contents):
     without_tags = list(filter(lambda x: type(x) is bs4.element.NavigableString, contents))
     without_tags = list(map(lambda x: str(x), without_tags))
+    without_tags = list(map(lambda x: str.lower(x), without_tags))
     for expression in without_tags:
         try:
             expression = substitute_polish_month(expression)

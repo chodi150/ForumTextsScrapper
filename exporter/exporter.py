@@ -31,7 +31,7 @@ def export_posts(forum_id, date_from,date_to, filename):
     repository = Repository.Repository()
     data = repository.get_posts(date_from, date_to, forum_id)
     df = pd.DataFrame(data, columns=['post', 'post_date', 'topic_title', 'category'])
-    df.to_csv(filename, sep=';', escapechar='\\')
+    df.to_csv(filename, sep=';', escapechar='\\', encoding='utf8')
 
 
 def show_all_forums():

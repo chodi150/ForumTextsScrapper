@@ -18,7 +18,6 @@ a;button button-icon-only;next_page_link
 a;right-box right;next_page_link
 span;label;topic_date
 h3;ipsType_sectionHead cAuthorPane_author ipsType_blendLinks ipsType_break;author
-h3;threadtitle;topic_whole
 h4;ipsDataItem_title ipsType_large ipsType_break;category_whole
 li;ipsDataItem ipsDataItem_responsivePhoto   ;topic_whole
 a;ipsType_break;author
@@ -28,3 +27,5 @@ div;username_container;author
 div;ipsType_normal ipsType_richText ipsContained;post_body
 li;ipsPagination_next;next_page_whole
 span;date;post_date
+a;username offline popupctrl;author
+a;title threadtitle_unread;topic_title

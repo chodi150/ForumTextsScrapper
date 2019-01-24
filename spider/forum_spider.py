@@ -92,7 +92,7 @@ class CategoriesSpider(scrapy.Spider):
         if not filtering.topic_meets_criterions(title, author, date):
             return
         topic = self.repository.save_topic(author, date, link, parent, title)
-        self.logger_dbg.info("Scrapped topic: " + title + " with id: " + str(topic.topic_id))
+        self.logger_dbg.info("Scrapped topic: " + str(topic))
         yield scrapy.Request(dont_filter=True, url=build_link(self.base_domain, topic.link), callback=self.parse,
                              meta={'parent': topic})
 
