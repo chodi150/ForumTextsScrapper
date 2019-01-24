@@ -1,6 +1,6 @@
 1. Opis programu
 Program jest implementacją zautomatyzowanego procesu ekstrakcji tekstów z forów internetowych.
-Umożliwia pobieranie danych tekstowych z zadanego forum oraz eksport ich reprezentacji wektorowych.
+Umożliwia pobieranie danych tekstowych z zadanego forum oraz eksport treści oraz ich reprezentacji wektorowych.
 Możliwa jest obsługa następujących platform forów: phpBB, Invision oraz vBulletin.
 
 2. Konfiguracja środowiska
@@ -25,6 +25,7 @@ PASSWORD = "postgres"
 HOST = "localhost"
 DATABASE_NAME = "scrap2"
 
+Baza danych powinna być uprzednio założona - schemat i tabele zostaną założone przy pierwszym uruchomieniu aplikacji
 
 3. Instrukcja obsługi
 a)starter.py  - umożliwia uruchamianie pająka Scrapy i pobieranie treści
@@ -74,7 +75,7 @@ Ponadto możliwe jest podanie dodatkowych kryteriów filtrujących oraz parametr
 
 
 
-Ponadto w ramach eksprotu reprezentacji utworzone zostaną jeszcze pliki .CSV, które zawierają:
+Ponadto w ramach eksportu reprezentacji utworzone zostaną jeszcze pliki .CSV, które zawierają:
 - wstępnie przetworzone teksty
 - wektory słów (w przypadku reprezentacji GloVe)
 
