@@ -15,9 +15,11 @@ utworzyć plik o nazwie "polish" z listą "stopwords" dla języka polskiego.
 Przykładową listę można znaleźć na:
 https://github.com/bieli/stopwords/blob/master/polish.stopwords.txt
 
-Natomiast w przypadku braku słownika dla języka polskiego
-w lokalizacji hunspella, zawierającej inne słowniki
-dodać pliki: pl.aff oraz pl.dic,  które można znaleźć na: https://sjp.pl/slownik/en/ lub w folderze extras
+Natomiast w przypadku braku słownika dla języka polskiego w lokalizacji hunspella, zawierającej inne słowniki,
+należy dodać pliki: pl.aff oraz pl.dic, które można znaleźć na: https://sjp.pl/slownik/en/ lub w folderze extras.
+Można również skorzystać z poleceń:
+cp extras/pl.aff lib/python3.5/site-packages/dictionaries
+cp extras/pl.dic lib/python3.5/site-packages/dictionaries
 
 Ponadto niezbędne jest skonfigurowanie połączenia do bazy danych PostgreSQL w pliku config/database_config.py:
 USERNAME = "postgres"
