@@ -3,7 +3,9 @@ import pony.orm as pny
 from repositories import sql_queries
 from util.logging_util import get_logger
 
-
+"""
+ Methods for interacting with database
+ """
 class Repository:
     logger = get_logger("logs/repository")
 
@@ -44,6 +46,9 @@ class Repository:
             return forum
 
     def find_forum(self, link):
+        """
+         Get forum of given link with highest id
+         """
         with pny.db_session:
             forum = Entities.Forum.select(lambda p: p.link == link).order_by(pny.desc(Entities.Forum.forum_id)).first()
             return forum

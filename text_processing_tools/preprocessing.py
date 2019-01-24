@@ -5,7 +5,7 @@ from anytree import Node, RenderTree
 from collections import Counter
 from util import logging_util
 
-diacrits = dict([("a", "ą"), ("e", "ę"), ("c", "ć"), ("z", "ź"), ("z", "ź"), ("l", "ł"), ("s", "ś"), ("o", "ó")])
+diacrits = dict([("a", "ą"), ("e", "ę"), ("c", "ć"), ("z", "ź"), ("l", "ł"), ("s", "ś"), ("o", "ó")])
 
 logger_dbg = logging_util.get_logger("logs/correcting")
 
@@ -20,12 +20,19 @@ def is_correct(word, hun):
 
 
 def report_progress(counter):
+    """
+    Helper function to report the advance in correct writing function
+    """
     counter[0] = counter[0] + 1
     if counter[0] % 100 ==0:
         print("Preprocessed " + str(counter[0]) + " tokens")
 
 
 def correct_writing(hun, tokens, counter):
+    """
+    Perform correcting spelling errors and steming for input list of tokens
+    and report the details of this process
+    """
     tokens_stemmed = []
     report_progress(counter)
     for i in range(0,len(tokens)):
@@ -48,6 +55,10 @@ def correct_writing(hun, tokens, counter):
 
 
 def build_post_repr(tokens, glove):
+    """
+    Build document representationt for glove so that each document is represented
+    as sum of word vectors it contains weighted by their TF in this document
+    """
     representation = np.zeros(glove.no_components)
     counter = Counter(tokens)
     for tok in tokens:
@@ -60,10 +71,13 @@ def build_post_repr(tokens, glove):
 
 
 def diacritize_recursively(parent, i):
+    """
+    Generate recursively all the possible diacritic versions of given word
+    """
     if i >= len(parent.name):
         return
     if parent.name[i] not in diacrits.keys():
-        diacritize_recursively(parent, i + 1)
+        diacritize_recursively(parent, i + 1) # letter not to be diacritized
     else:
         word1 = parent.name
         word2 = ""
@@ -74,12 +88,15 @@ def diacritize_recursively(parent, i):
         n2 = Node(word2, parent=parent)
         diacritize_recursively(n1, i + 1)
         diacritize_recursively(n2, i + 1)
-        n3 = execute_special_action_if_z_available(parent, i)
+        n3 = execute_special_action_if_z_available(parent, i) #start node of 'z' should have 3 childs: z, ż and ź
         if n3 is not None:
             diacritize_recursively(n3, i + 1)
 
 
 def execute_special_action_if_z_available(parent, i):
+    """
+    Helper method to avoid the unpossibility to map z to ż and ź in dict
+    """
     word3=""
     for j in range(0, len(parent.name)):
         word3 += parent.name[j] if j != i else get_diacrits_wrapped(parent.name[j])

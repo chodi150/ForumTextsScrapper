@@ -15,6 +15,9 @@ class CategoriesScrapingStrategy(ScrapingStrategy):
         return self.forum
 
     def execute_strategy(self, html_element, parent, predicted, tag, mappings, spider):
+        """
+        Look only for categories
+        """
         if predicted in (mappings.get_mapping(m.category_whole), mappings.get_mapping(m.category_title)):
             yield from spider.parse_categories(html_element, predicted, parent)
 

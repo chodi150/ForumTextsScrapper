@@ -21,6 +21,9 @@ class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
         return self.forum
 
     def execute_strategy(self, html_element, parent, predicted, tag, mappings, spider):
+        """
+        Look for all the forum elements apart from categories
+        """
         if not self.strategy_initialized:
             yield from self.prepare_strategy(spider)
         else:
@@ -32,6 +35,9 @@ class ChosenCategoriesScrapingStrategy(ScrapingStrategy):
                 spider.parse_posts(html_element, parent)
 
     def prepare_strategy(self, spider):
+        """
+        Read all the categories to scrap from config file
+        """
         config_file = pd.read_csv("config/categories.csv", sep=';')
         category_ids = set(config_file['category_id'])
         categories = self.repository.get_categories(category_ids)

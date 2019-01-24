@@ -14,7 +14,7 @@ parser.add_argument('-df', '--datefrom',
                     help='Posts written from the date, use format: y-m-d, default value: 1970-1-1',
                     type=valid_date)
 parser.add_argument('-dt', '--dateto',
-                    help='Posts written until the date, use format: y-m-d, default value: 2020-1-1',
+                    help='Posts written until the date, use format: y-m-d, default value: 2040-1-1',
                     type=valid_date)
 parser.add_argument('-fn', '--filename', help='Filename for exported file, default value: output')
 

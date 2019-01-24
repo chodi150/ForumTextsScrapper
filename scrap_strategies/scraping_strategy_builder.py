@@ -6,6 +6,9 @@ from scrap_strategies.scraping_strategy import ScrapingStrategy
 
 
 def get_strategy(abbreviation) -> ScrapingStrategy:
+    """
+        Produce scraping strategy based on abbreviations
+    """
     if abbreviation == scrap_modes.chosen_categories:
         return ChosenCategoriesScrapingStrategy()
     elif abbreviation == scrap_modes.full_scraping:

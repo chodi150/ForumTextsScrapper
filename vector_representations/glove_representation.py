@@ -12,7 +12,7 @@ def transform_to_glove(date_from, date_to, filename, forum_id, max_df, min_df, v
     vectorizer = build_dictionary_for_glove(data_frame, max_df, min_df)
     data_frame.post = data_frame.post.apply(lambda x: x.split(" "))
     glove = build_glove_word_vectors(data_frame, vec_dim, vectorizer, window_size, niter)
-    pd.DataFrame(glove.word_vectors).to_csv("word_vectors" + filename, sep=';')
+    pd.DataFrame(glove.word_vectors).to_csv("word_vectors" + filename, sep=';') #perform additional saving of word vectors
     representations = build_document_representations(data_frame, glove)
     size_of_dictionary = len(vectorizer.get_feature_names())
     return representations, size_of_dictionary
@@ -28,6 +28,9 @@ def build_glove_word_vectors(data_frame, vec_dim, vectorizer, window_size, niter
 
 
 def build_dictionary_for_glove(data_frame, max_df, min_df):
+    """
+     choose words of which word vectors will be built
+    """
     data_frame.post = data_frame.post.apply(lambda x: " ".join(x))
     stops = set(stopwords.words('polish'))
     vectorizer = TfidfVectorizer(stop_words=stops, min_df=min_df, max_df=max_df, use_idf=False)

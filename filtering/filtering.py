@@ -6,7 +6,7 @@ def post_meets_criterions(content, author, date):
     return is_post_author_valid(author) and is_post_date_in_range(date) and has_post_keywords(content)
 
 
-def topic_meets_criterions(content, author, date):
+def topic_meets_criterion(content, author, date):
     return is_topic_author_valid(author) and is_topic_date_in_range(date) and has_topic_keywords(content)
 
 

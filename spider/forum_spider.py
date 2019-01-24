@@ -39,13 +39,18 @@ class CategoriesSpider(scrapy.Spider):
                     yield from self.scraping_strategy.execute_strategy(html_element, parent, predicted, tag, self.rule_provider, self)
 
     def parse_categories(self, html_element, predicted, parent):
+        """
+        Executes action of parsing the categories
+        """
         category = None
+        """ Title found"""
         if predicted == self.rule_provider.get_mapping(m.category_title):
             link = html_element['href']
             title = str(html_element.contents[0])
             category = self.repository.save_category(title, link, parent, self.forum)
             self.logger_dbg.info(title + " " + self.base_domain + link)
 
+        """ Unwrapping needed """
         if predicted == self.rule_provider.get_mapping(m.category_whole):
             try:
                 first_a_html_element_inside_whole = html_element.findAll("a")[0]
@@ -79,6 +84,7 @@ class CategoriesSpider(scrapy.Spider):
                     if predicted == self.rule_provider.get_mapping(m.topic_date):
                         date = dpt.parse_date(elem.contents)
 
+        """ Additional check english speaking invision """
         time_tags = html_element.findAll("time")
         if len(time_tags) > 0:
             date = dpt.parse_english_date(time_tags[0].contents)
@@ -89,7 +95,7 @@ class CategoriesSpider(scrapy.Spider):
             self.logger_dbg.info("Can't find topic inside: " + str(html_element))
             return
 
-        if not filtering.topic_meets_criterions(title, author, date):
+        if not filtering.topic_meets_criterion(title, author, date):
             return
         topic = self.repository.save_topic(author, date, link, parent, title)
         self.logger_dbg.info("Scrapped topic: " + str(topic))
@@ -97,10 +103,14 @@ class CategoriesSpider(scrapy.Spider):
                              meta={'parent': topic})
 
     def parse_posts(self, html_element, parent):
+        """
+        Executes action of parsing the post
+        """
         self.logger_dbg.info("Parsing post of topic: " + parent.title)
         author = None
         date = None
         content = None
+        """Go through all the possible tags that occur in posts and determine their function """
         for tag in self.rule_provider.possible_tags_posts:
             elements_with_tag = html_element.findAll(tag)
             for elem in elements_with_tag:
@@ -112,16 +122,17 @@ class CategoriesSpider(scrapy.Spider):
                         author = elem.contents[0]
                     if predicted == self.rule_provider.get_mapping(m.post_date):
                         date = dpt.parse_date(elem.contents)
-
+        """Perform additional check for english format of date """
         time_tags = html_element.findAll("time")
-        if len(time_tags) > 0:
+        if len(time_tags) > 0 and date is None:
             date = dpt.parse_english_date(time_tags[0].contents)
         if content is not None and filtering.post_meets_criterions(content, author, date):
             self.repository.save_post(author, content, date, parent)
 
-
-
     def go_to_next_page(self, html_element, parent, predicted):
+        """
+        Executes action of going to the next page
+        """
         if predicted == self.rule_provider.get_mapping(m.next_page):
             try:
                 first_a_html_element_inside_whole = html_element.findAll("a")[0]
@@ -133,7 +144,7 @@ class CategoriesSpider(scrapy.Spider):
                 self.logger_dbg.error("Couldn't go to next page of: " + str(parent) + " due to: " + str(e))
                 self.logger_dbg.error("Element that caused the problem: " + str(html_element))
         elif predicted == self.rule_provider.get_mapping(m.next_page_link):
-            self.logger_dbg.info("Going to next page: " +str(parent) + " url: " + html_element['href'])
+            self.logger_dbg.info("Going to next page: " + str(parent) + " url: " + html_element['href'])
             yield scrapy.Request(url= build_link(self.base_domain, html_element['href']), callback=self.parse,
                                  meta={'parent': parent})
 

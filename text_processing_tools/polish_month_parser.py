@@ -1,5 +1,7 @@
 from functools import reduce
 
+# Mapping of possible month names and abbreviations to their respective values
+# Necessary in process of parsing polish dates
 
 class PolishMonthHelper:
     def __init__(self):

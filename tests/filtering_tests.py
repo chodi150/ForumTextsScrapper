@@ -22,7 +22,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = None
         filtering_config.topic_authors = None
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2000, 1, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2000, 1, 1))
 
         self.assertTrue(res)
 
@@ -32,7 +32,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = None
         filtering_config.topic_authors = None
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
 
         self.assertTrue(res)
 
@@ -42,7 +42,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = None
         filtering_config.topic_authors = None
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2002, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2002, 10, 1))
 
         self.assertFalse(res)
 
@@ -52,7 +52,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = None
         filtering_config.topic_authors = None
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2007, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2007, 10, 1))
 
         self.assertFalse(res)
 
@@ -62,7 +62,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = None
         filtering_config.topic_authors = ["Johannes", "Moritz"]
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
 
         self.assertFalse(res)
 
@@ -72,7 +72,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = None
         filtering_config.topic_authors = ["Johannes", "Moritz", "Friderik"]
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
 
         self.assertTrue(res)
 
@@ -82,7 +82,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = ["Drogen", "Unfall"]
         filtering_config.topic_authors = ["Johannes", "Moritz", "Friderik"]
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
 
         self.assertFalse(res)
 
@@ -92,7 +92,7 @@ class TestTextProcessingTools(TestCase):
         filtering_config.topic_keywords = ["Drogen", "Unfall", "kaputt"]
         filtering_config.topic_authors = ["Johannes", "Moritz", "Friderik"]
 
-        res = topic_meets_criterions("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
+        res = topic_meets_criterion("Mein Auto ist leider kaputt", "Friderik", datetime(2004, 10, 1))
 
         self.assertTrue(res)
 

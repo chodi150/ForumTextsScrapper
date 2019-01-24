@@ -17,6 +17,9 @@ class FullScrapingStrategy(ScrapingStrategy):
         return self.forum
 
     def execute_strategy(self, html_element, parent, predicted, tag, mappings, spider):
+        """
+        In this strategy all forum elements matter
+        """
         if predicted in (mappings.get_mapping(m.category_whole), mappings.get_mapping(m.category_title)):
             yield from spider.parse_categories(html_element, predicted, parent)
         if predicted == mappings.get_mapping(m.topic_whole):
