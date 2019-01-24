@@ -43,6 +43,4 @@ def build_document_representations(data_frame, glove):
     for post in data_frame.post:
         representations = representations.append(build_post_repr(post, glove))
     representations['belongs_to'] = data_frame.category.values
-    representations = representations[representations['delete'] == False]
-    representations = representations.drop('delete', axis=1)
     return representations

@@ -66,7 +66,6 @@ def build_post_repr(tokens, glove):
             representation = representation + counter[tok]*glove.word_vectors[glove.dictionary[tok]]
 
     data_frame =  pd.DataFrame(item for item in representation).transpose()
-    data_frame['delete'] = True if np.all(representation == 0) else False
     return data_frame
 
 

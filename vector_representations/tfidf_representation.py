@@ -12,7 +12,6 @@ def transform_to_tfidf(date_from, date_to, filename, forum_id, max_df, min_df):
     data_frame = preprocess_texts_from_given_forum(forum_id, date_from, date_to, "prepare_" + filename)
     data_frame = preprocess_for_tfidf(data_frame)
     tfidf, vectorizer = prepare_tfidf(data_frame, max_df, min_df)
-    tfidf = drop_null_values(tfidf)
     size_of_dictionary = len(vectorizer.get_feature_names())
     return size_of_dictionary, tfidf
 
@@ -31,10 +30,3 @@ def prepare_tfidf(data_frame, max_df, min_df):
     tfidf['category'] = data_frame.category
     return tfidf, vectorizer
 
-
-def drop_null_values(tfidf):
-    only_nulls = list(map(lambda x: np.all(x[0:len(x) - 1] == 0), tfidf.values))
-    tfidf['only_nulls'] = np.array(only_nulls)
-    tfidf = tfidf[tfidf['only_nulls'] == False]
-    tfidf = tfidf.drop('only_nulls', axis=1)
-    return tfidf
