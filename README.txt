@@ -13,7 +13,7 @@ W przypadku niepowodzenia instalacji pakietu CyHunspell, należy na maszynie naj
 W razie braku listy "stopwords" dla języka polskiego, należy w lokalizacji:  {ścieżka do folderu z danymi biblioteki nltk}/nltk_data/corpora/stopwords/
 utworzyć plik o nazwie "polish" z listą "stopwords" dla języka polskiego.
 Przykładową listę można znaleźć na:
-https://github.com/bieli/stopwords/blob/master/polish.stopwords.txt
+https://github.com/bieli/stopwords/blob/master/polish.stopwords.txt lub w folderze extras tego projektu.
 
 Natomiast w przypadku braku słownika dla języka polskiego w lokalizacji hunspella, zawierającej inne słowniki,
 należy dodać pliki: pl.aff oraz pl.dic, które można znaleźć na: https://sjp.pl/slownik/en/ lub w folderze extras.
