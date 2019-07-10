@@ -1,4 +1,12 @@
-﻿1. Opis programu
+﻿
+Abstract of the thesis:
+Despite immense amounts of data available in the Internet, the process of their extraction is often tedious and time-consuming. This thesis is devoted to automatization of the textual data extraction process from Internet forums and its transformation to vector representations. The automatization is fulfilled by an implemented, generic tool. Its requirements, assumptions and details were described. The tool serves for data downloading from the most popular forum engines and transforming the extracted texts to vector representations. Tests of extracting data from three most widely used forum platforms were presented. Exported vector representations of texts were analyzed with use of machine learning algorithms to demonstrate possible uses of extracted data. Possible applications of forum data as well as reasons that make forums interesting field for exploration in data analysis were also introduced.
+ 
+ 
+This repository contains code aiming to automatize extraction of textual data from internet forums.
+
+ 
+ 1. Opis programu
 Program jest implementacją zautomatyzowanego procesu ekstrakcji tekstów z forów internetowych.
 Umożliwia pobieranie danych tekstowych z zadanego forum oraz eksport treści oraz ich reprezentacji wektorowych.
 Możliwa jest obsługa następujących platform forów: phpBB, Invision oraz vBulletin.
