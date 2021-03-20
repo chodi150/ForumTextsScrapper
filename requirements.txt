@@ -20,7 +20,7 @@ hunspell==0.5.5
 hyperlink==18.0.0
 idna==2.8
 incremental==17.5.0
-Jinja2==2.8
+Jinja2==2.11.3
 jsonpatch==1.10
 jsonpointer==1.9
 lxml==4.3.0
