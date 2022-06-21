@@ -26,7 +26,7 @@ jsonpointer==1.9
 lxml==4.3.0
 MarkupSafe==0.23
 nltk==3.4
-numpy==1.16.0
+numpy==1.22.0
 oauthlib==1.0.3
 pandas==0.23.4
 parsel==1.5.1
